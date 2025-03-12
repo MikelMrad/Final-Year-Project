@@ -1,0 +1,12 @@
+.Container{
+  width: 30%;
+  background-color: rgb(240, 240, 240);
+  padding: 10px;
+  border-top-left-radius: 50px;
+  min-height: 100vh;
+}
+
+.list li{
+  display: flex;
+  align-items: center;
+}

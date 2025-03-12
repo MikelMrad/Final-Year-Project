@@ -1,0 +1,19 @@
+.container {
+  padding: 20px;
+}
+
+.heading {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.paragraph {
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.brand {
+  color: #000000;
+  font-weight: bold;
+}

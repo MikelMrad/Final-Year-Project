@@ -1,0 +1,33 @@
+.container {
+  padding: 20px;
+}
+
+.heading {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.paragraph {
+  font-size: 1.2em;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.subheading {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.brand {
+  color: #000000;
+  font-weight: bold;
+}
+
+.link {
+  color: #000000;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

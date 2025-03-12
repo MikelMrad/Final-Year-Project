@@ -1,0 +1,27 @@
+[
+    {
+        "id": "men",
+        "label": "Men",
+        "icon": "/static/man.png"
+    },
+    {
+        "id": "women",
+        "label": "Women",
+        "icon": "/static/woman.png"
+    },
+    {
+        "id": "kids",
+        "label": "Kids",
+        "icon": "/static/baby-boy.png"
+    },
+    {
+        "id": "accessories",
+        "label": "Accessories",
+        "icon": "/static/earrings.png"
+    },
+    {
+        "id": "footwear",
+        "label": "Footwear",
+        "icon": "/static/shoes.png"
+    }
+]

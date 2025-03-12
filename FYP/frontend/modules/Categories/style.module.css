@@ -1,0 +1,37 @@
+.container{
+  display: flex;
+  padding: 0 200px;
+  margin: 20px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container img{
+  width: 80px;
+  padding: 0 20px;
+}
+
+.cardContainer{
+  display: flex;
+}
+
+.cardContainer a {
+  text-decoration: none;
+}
+
+.card {
+  cursor:pointer;
+  border-radius: 15px;
+  width: 13rem;
+  display: flex;
+  margin:20px ; 
+  flex-direction: column;
+  transition: 0.3s;
+  align-items: center;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.card:hover {
+  box-shadow: rgba(40, 40, 83, 0.4) 0px 13px 27px -5px, rgba(0, 0, 0, 0.45) 0px 8px 16px -8px;
+  transition: 0.3s;
+}

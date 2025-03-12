@@ -1,0 +1,74 @@
+.container{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.info {
+  padding: 10px 50px;
+  width: 60%;
+  margin: auto;
+}
+
+.orderForm {
+  max-width: 600px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.label {
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.checkboxContainer, .radioContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.checkbox, .radio {
+  margin-right: 8px;
+}
+
+.checkboxLabel, .radioLabel {
+  font-size: 14px;
+}
+
+.select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.shippingCost {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.submitButton {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  background-color: #0070f3;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: #005bb5;
+}

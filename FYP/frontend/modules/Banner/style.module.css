@@ -1,0 +1,97 @@
+.bannerContainer {
+  margin: auto;
+  position: relative;
+  height: 600px;
+  max-width: 100%;
+  overflow: hidden;
+}
+.bannerContainer h4 {
+  position: absolute;
+  left: 45%;
+  top: 50%;
+  animation: pulse 1.5s infinite alternate;
+  transform: translateY(-50%);
+}
+
+.bannerSlider {
+  max-height: 450px;
+  position: relative;
+  width: 100%;
+}
+.bannerSlide {
+  width: 100%;
+  position: relative;
+  object-fit: fill;
+}
+
+.bannerSlide h1,
+.bannerSlide p {
+  position: relative;
+  color: #ffffff;
+  z-index: 1000;
+}
+
+.bannerSlide h1 {
+  width: 350px;
+}
+
+.bannerSlide p {
+  font-size: 14px;
+  width: 600px;
+  font-weight: 400;
+}
+
+@media (max-width: 767px) {
+  .bannerSlide p {
+    width: 70%;
+    left: 7%;
+    font-size: 14px;
+  }
+  .bannerSlide h1 {
+    font-size: 18px;
+    width: 50%;
+    left: 7%;
+  }
+}
+
+.bannerImage {
+  width: 100%;
+  object-fit: cover;
+  margin: 0 auto;
+  height: 576px;
+}
+
+.bannerText {
+  padding: 2%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 30px;
+  max-height: 406px;
+  position: absolute;
+  left: 20%;
+  top: 50%;
+  transform: translate(-20%, -50%);
+  z-index: 10;
+  color: #ffffff;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.bannerText a{
+  text-decoration: none;
+  padding: 3%;
+  border-radius: 10px;
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 600;
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  transition: 0.35s;
+}
+
+.bannerText a:hover{
+  background-color: white;
+  color: black;
+  transition: 0.35s;
+}

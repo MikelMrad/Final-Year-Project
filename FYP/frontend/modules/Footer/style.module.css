@@ -1,0 +1,131 @@
+.footer{
+  padding: 60px 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  margin-top: 36px;
+}
+
+.footerContainer{
+  margin: 0 80px;
+}
+
+.textContainer{
+  color: #ffffff;
+  display: grid;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  align-items: baseline;
+}
+
+.textContainer a {
+  font-weight: 600;
+  background-image: linear-gradient(
+    to right,
+    #000000,
+    #000000 50%,
+    #ffffff 50%
+  );
+  background-size: 200% 100%;
+  background-position: -100%;
+  display: inline-block;
+  padding: 5px 0;
+  position: relative;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 0.3s ease-in-out;
+}
+
+.textContainer a:before{
+  content: '';
+  background: #000000;
+  display: block;
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  transition: all 0.3s ease-in-out;
+}
+
+.textContainer a:hover {
+  background-position: 0;
+}
+
+.textContainer a:hover::before{
+  width: 100%;
+}
+
+.rightTextContainer{
+  padding: 20px 0 0 0;
+  display: grid;
+  grid-column-gap: .75rem;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
+  justify-content: start;
+}
+
+.footerSocialsContainer{
+  display: grid;
+  grid-column-gap: 1.25rem;
+  grid-template-rows: auto;
+  grid-template-columns: max-content;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
+  place-items: start;
+  align-items: center;
+  padding: 30px 0 0 0;
+}
+
+.footerSocialsContainer img { 
+  transition: 0.2s;
+  padding: 14px;
+  border: 2px solid white;
+}
+
+
+.footerSocialsContainer img:hover { 
+  transition: 0.2s;
+  margin: 2px 2px;
+  padding: 12px;
+  filter: invert();
+}
+
+#logo {
+  filter: invert();
+}
+
+@media (max-width: 1100px) {
+  .textContainer{
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 530px) {
+  .rightTextContainer{
+    display: flex;
+    flex-direction: column;
+  }
+  .footer{
+    padding:30px 0;
+  }
+  .footerContainer{
+    margin: 0 30px;
+  }
+  
+}
+
+@media (max-width: 800px) {
+  .footer{
+    padding: 30px 0;
+  }
+  .footerContainer{
+    margin: 0 30px;
+    font-size: 14px;
+  }
+  #logo{
+    width: 100px;
+    height: auto;
+  }
+}
+
