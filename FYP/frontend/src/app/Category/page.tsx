@@ -11,7 +11,7 @@ import Footer from '../../../modules/Footer';
 
 export default function page() {
 
-  const filterCategory = useAppSelector((state) => state.category.category);
+  const filterCategory = useAppSelector((state) => state.category.category)
 
   return (
     <div>
