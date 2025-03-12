@@ -1,0 +1,41 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn.lock
+pnpm-lock.yaml
+package-lock.json
+
+# Build artifacts
+dist/
+.out/
+.next/
+.cache/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+yarn-error.log
+debug.log
+error.log
+
+# OS-specific files
+*.swp
+*.swo
+.idea/
+*.bak
+*.tmp
+*.lock
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Next.js specific
+.next/
+out/
