@@ -40,6 +40,16 @@ const AppointmentType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
+    // {
+    //   tutors {
+    //     id
+    //     name
+    //     email
+    //     hourlyRate
+    //     expertise
+    //     experience
+    //   }
+    // }
     tutors: {
       type: new GraphQLList(TutorType),
       resolve(parent, args) {
@@ -85,6 +95,16 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
+    // mutation {
+    //   addTutor(name: "John Doe", email: "john@example.com", hourlyRate: 25.5, expertise: ["Math", "Science"], experience: 5) {
+    //     id
+    //     name
+    //     email
+    //     hourlyRate
+    //     expertise
+    //     experience
+    //   }
+    // }    
     addTutor: {
       type: TutorType,
       args: {
@@ -121,6 +141,24 @@ const Mutation = new GraphQLObjectType({
           weakPoints: args.weakPoints
         })
         return student.save()
+      }
+    },
+    deleteTutor: {
+      type: TutorType,
+      args: {
+        id: { type: GraphQLID }
+      },
+      resolve(parent, args) {
+        return Tutor.findByIdAndDelete(args.id) 
+      }
+    },
+    deleteStudent: {
+      type: StudentType,
+      args: {
+        id: { type: GraphQLID }
+      },
+      resolve(parent, args) {
+        return Student.findByIdAndDelete(args.id) 
       }
     },
     addAppointment: {
