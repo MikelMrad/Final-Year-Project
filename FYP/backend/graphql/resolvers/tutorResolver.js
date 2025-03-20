@@ -17,7 +17,7 @@ const TutorQueries = {
     }
   }
 }
-
+//bump
 const TutorMutations = {
   addTutor: {
     type: TutorType,
