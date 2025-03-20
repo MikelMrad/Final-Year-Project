@@ -1,10 +1,10 @@
 const mongoose = require("mongoose")
 
-const appointmentSchema = new mongoose.Schema({
+const reviewSchema = new mongoose.Schema({
   student: { type: mongoose.Schema.Types.ObjectId, ref: "Student", required: true },
   tutor: { type: mongoose.Schema.Types.ObjectId, ref: "Tutor", required: true },
-  date: { type: Date, required: true },
-  confirmed: { type: Boolean, default: false }
+  rating: { type: Number, required: true },
+  comment: { type: String }
 })
 
-module.exports = mongoose.model("Appointment", appointmentSchema)
+module.exports = mongoose.model("Review", reviewSchema)

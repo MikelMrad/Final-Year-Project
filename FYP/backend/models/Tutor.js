@@ -1,27 +1,11 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose")
 
-const tutor = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  hourlyRate: {
-    type: Number,
-    required: true
-  },
-  expertise: {
-    type: [String],
-    required: true
-  },
-  experience: {
-    type: Number,
-    required: true
-  }
+const tutorSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  hourlyRate: { type: Number, required: true },
+  subjects: [{ type: String, required: true }]
 })
 
-module.exports = mongoose.model('Tutor', tutor)
+module.exports = mongoose.model("Tutor", tutorSchema)
