@@ -1,21 +1,22 @@
 const Tutor = require("../../models/Tutor")
 const TutorType = require("../types/TutorType")
 const { protect } = require("../../middleware/authMiddleware")
-const { GraphQLList, GraphQLID, GraphQLString, GraphQLFloat, GraphQLList: List } = require("graphql")
+const generateToken = require("../../config/generateTokens")
+const { GraphQLList, GraphQLID, GraphQLString, GraphQLFloat } = require("graphql")
 
 const TutorQueries = {
   tutors: {
     type: new GraphQLList(TutorType),
-    resolve() {
-      return Tutor.find()
+    async resolve() {
+      return await Tutor.find()
     }
   },
   tutor: {
     type: TutorType,
     args: { id: { type: GraphQLID } },
-    async resolve(parent, args, context) {
-      await protect(resolve, parent, args, context)
-      return Tutor.findById(args.id)
+    async resolve( args, context ) {
+      await protect(context)
+      return await Tutor.findById(args.id)
     }
   }
 }
@@ -28,33 +29,29 @@ const TutorMutations = {
       email: { type: GraphQLString },
       password: { type: GraphQLString },
       hourlyRate: { type: GraphQLFloat },
-      subjects: { type: new GraphQLList(GraphQLString) },
-      token: { type: GraphQLString },
+      subjects: { type: new GraphQLList(GraphQLString) }
     },
     async resolve(_, args) {
       try {
+        const existingTutor = await Tutor.findOne({ email: args.email })
+        if (existingTutor) {
+          throw new Error("A tutor with this email already exists.")
+        }
         const tutor = new Tutor({
           name: args.name,
           email: args.email,
           password: args.password,
           hourlyRate: args.hourlyRate,
-          subjects: args.subjects,
+          subjects: args.subjects
         })
-        console.log("Saving tutor:", tutor)
         const savedTutor = await tutor.save()
-        console.log("Saved tutor:", savedTutor)
+        const token = generateToken(savedTutor._id)
+        savedTutor.token = token
         return savedTutor
       } catch (error) {
         console.error("Error in addTutor mutation:", error)
         throw new Error("Could not save tutor.")
       }
-    }
-  },  
-  deleteTutor: {
-    type: TutorType,
-    args: { id: { type: GraphQLID } },
-    resolve(_, args) {
-      return Tutor.findByIdAndDelete(args.id)
     }
   }
 }

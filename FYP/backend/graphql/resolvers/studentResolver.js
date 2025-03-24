@@ -5,14 +5,15 @@ const { GraphQLList, GraphQLID, GraphQLString, GraphQLList: List } = require("gr
 const StudentQueries = {
   students: {
     type: new GraphQLList(StudentType),
-    resolve() {
+    async resolve() {
       return Student.find()
     }
   },
   student: {
     type: StudentType,
     args: { id: { type: GraphQLID } },
-    resolve(_, args) {
+    async resolve( args, context ) {
+      await protect(context)
       return Student.findById(args.id)
     }
   }

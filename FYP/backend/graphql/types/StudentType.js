@@ -7,7 +7,8 @@ const StudentType = new GraphQLObjectType({
     name: { type: GraphQLString },
     email: { type: GraphQLString },
     enrolledCourses: { type: new GraphQLList(GraphQLString) },
-    weakPoints: { type: new GraphQLList(GraphQLString) }
+    weakPoints: { type: new GraphQLList(GraphQLString) },
+    token: { type: GraphQLString },
   })
 })
 

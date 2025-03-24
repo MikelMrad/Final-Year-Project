@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import bcrypt from 'bcryptjs'
+const mongoose = require("mongoose")
+const bcrypt = require("bcryptjs")
 
 const TutorSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -15,9 +15,10 @@ TutorSchema.pre('save', async function (next) {
   next()
 })
 
+
 TutorSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password)
 }
 
-export default mongoose.model('Tutor', TutorSchema)
+module.exports = mongoose.model('Tutor', TutorSchema)
 
