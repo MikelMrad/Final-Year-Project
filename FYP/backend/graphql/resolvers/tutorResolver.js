@@ -1,5 +1,6 @@
 const Tutor = require("../../models/Tutor")
 const TutorType = require("../types/TutorType")
+const { protect } = require("../../middleware/authMiddleware")
 const { GraphQLList, GraphQLID, GraphQLString, GraphQLFloat, GraphQLList: List } = require("graphql")
 
 const TutorQueries = {
@@ -12,12 +13,13 @@ const TutorQueries = {
   tutor: {
     type: TutorType,
     args: { id: { type: GraphQLID } },
-    resolve(_, args) {
+    async resolve(parent, args, context) {
+      await protect(resolve, parent, args, context)
       return Tutor.findById(args.id)
     }
   }
 }
-//bump
+
 const TutorMutations = {
   addTutor: {
     type: TutorType,
@@ -26,7 +28,8 @@ const TutorMutations = {
       email: { type: GraphQLString },
       password: { type: GraphQLString },
       hourlyRate: { type: GraphQLFloat },
-      subjects: { type: new GraphQLList(GraphQLString) }
+      subjects: { type: new GraphQLList(GraphQLString) },
+      token: { type: GraphQLString },
     },
     async resolve(_, args) {
       try {
@@ -35,7 +38,7 @@ const TutorMutations = {
           email: args.email,
           password: args.password,
           hourlyRate: args.hourlyRate,
-          subjects: args.subjects
+          subjects: args.subjects,
         })
         console.log("Saving tutor:", tutor)
         const savedTutor = await tutor.save()

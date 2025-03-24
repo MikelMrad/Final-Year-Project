@@ -7,7 +7,8 @@ const TutorType = new GraphQLObjectType({
     name: { type: GraphQLString },
     email: { type: GraphQLString },
     hourlyRate: { type: GraphQLFloat },
-    subjects: { type: new GraphQLList(GraphQLString) }
+    subjects: { type: new GraphQLList(GraphQLString) },
+    token: { type: GraphQLString },
   })
 })
 
