@@ -61,7 +61,7 @@ const AdminQueries = {
     type: AdminType,
     async resolve(_, __, context) {
       await adminProtect(context)
-      return context.admin;
+      return context.admin
     },
   },
 }
