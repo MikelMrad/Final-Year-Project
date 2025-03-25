@@ -17,11 +17,16 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use(
   "/graphql",
-  graphqlHTTP({
+  graphqlHTTP((req) => ({
     schema: schema,
-    graphiql: true
-  })
+    graphiql: {
+      headerEditorEnabled: true, 
+      docExplorerEnabled: true,
+    },
+    context: { req }, 
+  }))
 )
+
 app.use(errorHandler)
 
 app.listen(port, () => console.log(`Server running on port ${port}`))
