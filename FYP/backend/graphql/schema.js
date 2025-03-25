@@ -6,6 +6,7 @@ const { PaymentQueries, PaymentMutations } = require("./resolvers/paymentResolve
 const { ReviewQueries, ReviewMutations } = require("./resolvers/reviewResolver")
 const { NotificationQueries, NotificationMutations } = require("./resolvers/notificationResolver")
 const { authResolvers } = require("./resolvers/authResolver");
+const { SubjectQueries, SubjectMutations } = require("./resolvers/subjectResolver")
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -15,7 +16,8 @@ const RootQuery = new GraphQLObjectType({
     ...AppointmentQueries,
     ...PaymentQueries,
     ...ReviewQueries,
-    ...NotificationQueries
+    ...NotificationQueries,
+    ...SubjectQueries
   }
 })
 
@@ -28,6 +30,7 @@ const Mutation = new GraphQLObjectType({
     ...PaymentMutations,
     ...ReviewMutations,
     ...NotificationMutations,
+    ...SubjectMutations,
     ...authResolvers
   }
 })

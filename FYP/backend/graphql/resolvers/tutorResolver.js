@@ -14,7 +14,7 @@ const TutorQueries = {
   tutor: {
     type: TutorType,
     args: { id: { type: GraphQLID } },
-    async resolve( args, context ) {
+    async resolve(_, args, context ) {
       await protect(context)
       return await Tutor.findById(args.id)
     }
@@ -29,7 +29,8 @@ const TutorMutations = {
       email: { type: GraphQLString },
       password: { type: GraphQLString },
       hourlyRate: { type: GraphQLFloat },
-      subjects: { type: new GraphQLList(GraphQLString) }
+      subjects: { type: new GraphQLList(GraphQLString) },
+      token: { type: GraphQLString },
     },
     async resolve(_, args) {
       try {
