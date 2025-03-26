@@ -1,16 +1,16 @@
 import React from 'react'
 import styles from './style.module.css'
-import { Card, CardContent ,CardHeader ,CardMedia} from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { setFilterCategory } from '@/redux/features/categorySlice';
+import { Card, CardContent ,CardHeader ,CardMedia} from '@mui/material'
+import { useDispatch } from 'react-redux'
+import { setFilterCategory } from '@/redux/features/categorySlice'
 import categories from "../../data/categories.json"
 
 export default function index() {
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const handleFilterChange = (category: string) => {
-    dispatch(setFilterCategory(category));
-  };
+    dispatch(setFilterCategory(category))
+  }
 
   
   return (

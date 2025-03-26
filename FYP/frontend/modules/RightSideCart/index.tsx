@@ -1,20 +1,20 @@
 'use client'
 import React from 'react'
-import styles from "./style.module.css";
-import { useAppSelector } from '@/redux/store';
-import Image from 'next/image';
+import styles from "./style.module.css"
+import { useAppSelector } from '@/redux/store'
+import Image from 'next/image'
 
 function index() {
   
-  const cartItems = useAppSelector((state) => state.cart.items);
+  const cartItems = useAppSelector((state) => state.cart.items)
   
   const totalPrice = () => {
-  let total = 0;
+  let total = 0
   cartItems.forEach(item => {
-    total += item.price * item.quantity;
-  });
-  return total===0?0:total+4;
-};
+    total += item.price * item.quantity
+  })
+  return total===0?0:total+4
+}
 
   return (
     <div className={styles.Container}>

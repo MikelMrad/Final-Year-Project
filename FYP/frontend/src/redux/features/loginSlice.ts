@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 interface InitialState {
-  value: LoginState;
+  value: LoginState
 }
 
 interface LoginState  {
@@ -26,14 +26,14 @@ const initialState = {
     birthday:  "", 
     uid:  "", 
   }as LoginState, 
-} as InitialState;
+} as InitialState
 
 export const login = createSlice({
   name: "login",
   initialState,
   reducers: {
     logOut: () => {
-      return initialState;
+      return initialState
     },
     logIn: (_, action: PayloadAction<Action>) => {
       return {
@@ -49,5 +49,5 @@ export const login = createSlice({
   }
 })
 
-export const {logOut, logIn} = login.actions;
-export default login.reducer;
+export const {logOut, logIn} = login.actions
+export default login.reducer

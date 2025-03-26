@@ -1,13 +1,11 @@
 'use client'
-import React from 'react';
-import NavBar from "../../../modules/NavBar/index";
+import React from 'react'
+import NavBar from "../../../modules/NavBar/index"
 import StoreItems from "../../../data/products.json"
 import StoreItem  from "../../../components/StoreItem/index"
-import { Grid2 } from '@mui/material';
-import styles from "./style.module.css";
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/redux/store';
-import Footer from '../../../modules/Footer';
+import { Grid2 } from '@mui/material'
+import { useAppSelector } from '@/redux/store'
+import Footer from '../../../modules/Footer'
 
 export default function page() {
 

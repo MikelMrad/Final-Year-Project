@@ -1,7 +1,7 @@
 'use client'
-import React, { useState } from 'react';
-import styles from "./style.module.css";
-import RightSideCart from "../../../modules/RightSideCart/index";
+import React, { useState } from 'react'
+import styles from "./style.module.css"
+import RightSideCart from "../../../modules/RightSideCart/index"
 
 export default function page() {
   return (

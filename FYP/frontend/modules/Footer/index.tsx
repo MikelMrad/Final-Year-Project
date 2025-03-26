@@ -1,10 +1,10 @@
-import React from "react";
-import FooterLogo from "../../static/logo.png";
-import FacebookImage from "../../static/facebook.png";
-import LinkedInImage from "../../static/LinkedIn.png";
-import InstagramImage from "../../static/instagram.png";
+import React from "react"
+import FooterLogo from "../../static/logo.png"
+import FacebookImage from "../../static/facebook.png"
+import LinkedInImage from "../../static/LinkedIn.png"
+import InstagramImage from "../../static/instagram.png"
 import styles from "./style.module.css"
-import Image from "next/image";
+import Image from "next/image"
 
 export default function Footer() {
   return (
@@ -62,5 +62,5 @@ export default function Footer() {
           </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,33 +1,33 @@
 'use client'
 import React from 'react'
-import Image from 'next/image';
-import NavBar from "../../../modules/NavBar/index";
-import styles from "./style.module.css";
-import { useDispatch } from 'react-redux';
-import { removeItem, clearCart } from '../../redux/features/cartSlice';
-import { useAppSelector } from '@/redux/store';
-import Footer from '../../../modules/Footer';
-//bump
+import Image from 'next/image'
+import NavBar from "../../../modules/NavBar/index"
+import styles from "./style.module.css"
+import { useDispatch } from 'react-redux'
+import { removeItem, clearCart } from '../../redux/features/cartSlice'
+import { useAppSelector } from '@/redux/store'
+import Footer from '../../../modules/Footer'
+
 export default function page() {
 
-  const dispatch = useDispatch();
-  const cartItems = useAppSelector((state) => state.cart.items);
+  const dispatch = useDispatch()
+  const cartItems = useAppSelector((state) => state.cart.items)
 
   const handleRemoveItem = (itemId: string) => {
-    dispatch(removeItem(itemId));
-  };
+    dispatch(removeItem(itemId))
+  }
 
   const handleClearCart = () => {
-    dispatch(clearCart());
-  };
+    dispatch(clearCart())
+  }
 
   const totalPrice = () => {
-    let total = 0;
+    let total = 0
     cartItems.forEach(item => {
-      total += item.price * item.quantity;
-    });
-    return total;
-  };
+      total += item.price * item.quantity
+    })
+    return total
+  }
   
 
   return (

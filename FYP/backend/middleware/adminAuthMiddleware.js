@@ -14,7 +14,7 @@ const adminProtect = async (context) => {
       throw new Error("Invalid token format")
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
     const admin = await Admin.findById(decoded.id).select("-password")
 
     if (!admin) throw new Error("Admin not found")

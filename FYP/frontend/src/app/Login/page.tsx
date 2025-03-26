@@ -1,25 +1,25 @@
 'use client'
-import React from 'react';
-import styles from "./style.module.css";
-import Image from "next/image";
+import React from 'react'
+import styles from "./style.module.css"
+import Image from "next/image"
 import Logo from "../../../static/logo.png"
-import { useState } from 'react';
+import { useState } from 'react'
 import { logIn , logOut } from "@/redux/features/loginSlice"
-import { useDispatch } from 'react-redux';
-import { AppDispatch, useAppSelector } from '@/redux/store';
-import Footer from '../../../modules/Footer';
+import { useDispatch } from 'react-redux'
+import { AppDispatch, useAppSelector } from '@/redux/store'
+import Footer from '../../../modules/Footer'
 
 
 export default function page (){
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>()
 
-  const username = useAppSelector((state) => state.login.value.username);
+  const username = useAppSelector((state) => state.login.value.username)
 
-  const [userFname , setUserFname] = useState("");
-  const [userLname , setUserLname] = useState("");
-  const [email , setEmail] = useState("");
-  const [birthday , setBirthday] = useState("");
+  const [userFname , setUserFname] = useState("")
+  const [userLname , setUserLname] = useState("")
+  const [email , setEmail] = useState("")
+  const [birthday , setBirthday] = useState("")
 
   const onclickLogIn = () => {
     const actionPayload = {
@@ -27,10 +27,11 @@ export default function page (){
       email: email,
       birthday: birthday,
     }
-    dispatch(logIn(actionPayload));
+    localStorage.setItem('token', 'your-jwt-token')
+    dispatch(logIn(actionPayload))
   }
   const onclickLogOut = () => {
-    dispatch(logOut());
+    dispatch(logOut())
   }
 
   return (

@@ -1,18 +1,18 @@
-import Image from "next/image";
-import styles from "./style.module.css";
+import Image from "next/image"
+import styles from "./style.module.css"
 import Logo from "../../static/logo.png"
 import User from "../../static/user-interface.png"
 import Cart from "../../static/market.png"
-import { useAppSelector } from "@/redux/store";
+import { useAppSelector } from "@/redux/store"
 
 export default function Home() {
 
-  const cartItems = useAppSelector((state) => state.cart.items);
+  const cartItems = useAppSelector((state) => state.cart.items)
 
-  let cartCount = 0;
+  let cartCount = 0
   cartItems.forEach(item => {
-    cartCount += item.quantity;
-  });
+    cartCount += item.quantity
+  })
 
   return (
     <div className={styles.container}>
@@ -65,5 +65,5 @@ export default function Home() {
         </a>
       </div>
     </div>
-  );
+  )
 }

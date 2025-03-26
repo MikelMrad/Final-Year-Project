@@ -1,12 +1,12 @@
-'use client';
-import React from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import styles from "./style.module.css";
-import image1 from "../../static/banner4.jpg";
-import image2 from "../../static/banner3.jpg";
-import Image from "next/image";
+'use client'
+import React from "react"
+import Slider from "react-slick"
+import "slick-carousel/slick/slick.css"
+import "slick-carousel/slick/slick-theme.css"
+import styles from "./style.module.css"
+import image1 from "../../static/banner4.jpg"
+import image2 from "../../static/banner3.jpg"
+import Image from "next/image"
 
 
 export default function Banner() {
@@ -44,7 +44,7 @@ export default function Banner() {
         }
       }
     ]
-  };
+  }
   const slides = [
     {
       id: 1,
@@ -60,7 +60,7 @@ export default function Banner() {
       description:
       "Click Here!! ",
     },
-  ];
+  ]
 
   return (
     <div className={styles.bannerContainer}>
@@ -89,5 +89,5 @@ export default function Banner() {
       </div>
     )}
   </div>
-  );
+  )
 }

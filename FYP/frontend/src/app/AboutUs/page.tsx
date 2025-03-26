@@ -1,8 +1,8 @@
 'use client'
-import React from 'react';
-import NavBar from "../../../modules/NavBar";
-import styles from "./style.module.css";
-import Footer from '../../../modules/Footer';
+import React from "react"
+import NavBar from "../../../modules/NavBar"
+import styles from "./style.module.css"
+import Footer from '../../../modules/Footer'
 
 export default function page() {
   return (

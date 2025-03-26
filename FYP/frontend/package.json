@@ -9,12 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.5",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/material": "^6.0.2",
     "@reduxjs/toolkit": "^2.2.7",
     "@splidejs/splide": "^4.1.4",
     "@types/redux-logger": "^3.0.13",
+    "graphql": "^16.10.0",
     "mongodb": "^6.9.0",
     "mongoose": "^8.6.3",
     "next": "14.2.8",
