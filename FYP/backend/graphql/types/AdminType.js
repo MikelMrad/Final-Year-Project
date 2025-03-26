@@ -6,6 +6,7 @@ const AdminType = new GraphQLObjectType({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     email: { type: GraphQLString },
+    image: { type: GraphQLString },
     token: { type: GraphQLString },
   }),
 })

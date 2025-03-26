@@ -7,7 +7,8 @@ const StudentSchema = new mongoose.Schema({
   password: { type: String, required: true },
   enrolledCourses: [{ type: String }],
   weakPoints: [{ type: String }],
-})
+  image: { type: String, default: "default-avatar.png" },
+}, { timestamps: true })
 
 StudentSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next()

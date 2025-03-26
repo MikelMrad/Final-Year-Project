@@ -40,10 +40,12 @@ const ReviewMutations = {
   deleteReview: {
     type: ReviewType,
     args: { id: { type: GraphQLID } },
-    resolve(_, args) {
-      return Review.findByIdAndDelete(args.id)
+    async resolve(_, args, context) {
+      await adminProtect(context)
+      return await Review.findByIdAndDelete(args.id)
     }
   }
+  
 }
 
 module.exports = { ReviewQueries, ReviewMutations }

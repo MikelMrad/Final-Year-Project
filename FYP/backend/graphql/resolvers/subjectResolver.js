@@ -15,16 +15,18 @@ const SubjectMutations = {
   addSubject: {
     type: SubjectType,
     args: { name: { type: GraphQLString } },
-    resolve(_, args) {
+    async resolve(_, args, context) {
+      await adminProtect(context)
       const subject = new Subject({ name: args.name })
-      return subject.save()
+      return await subject.save()
     }
   },
   deleteSubject: {
     type: SubjectType,
     args: { id: { type: GraphQLID } },
-    resolve(_, args) {
-      return Subject.findByIdAndDelete(args.id)
+    async resolve(_, args, context) {
+      await adminProtect(context)
+      return await Subject.findByIdAndDelete(args.id)
     }
   }
 }

@@ -29,7 +29,13 @@ const AdminMutations = {
         password: args.password,
       })
       await admin.save()
-      return { ...admin._doc, token: generateToken(admin._id) }
+      return {
+        id: admin._id,
+        name: admin.name,
+        email: admin.email,
+        image: admin.image,
+        token: generateToken(admin._id),
+      }
     },
   },
   loginAdmin: {
@@ -49,9 +55,16 @@ const AdminMutations = {
     async resolve(_, args) {
       const admin = await Admin.findOne({ email: args.email })
       if (!admin || !(await admin.matchPassword(args.password))) {
-        throw new Error("Invalid email or password");
+        throw new Error("Invalid email or password")
       }
-      return { ...admin._doc, token: generateToken(admin._id) }
+
+      return {
+        id: admin._id,
+        name: admin.name,
+        email: admin.email,
+        image: admin.image,
+        token: generateToken(admin._id),
+      }
     },
   },
 }
@@ -60,8 +73,8 @@ const AdminQueries = {
   getAdminProfile: {
     type: AdminType,
     async resolve(_, __, context) {
-      await adminProtect(context)
-      return context.admin
+      await adminProtect(context);
+      return context.admin;
     },
   },
 }

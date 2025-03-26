@@ -39,15 +39,17 @@ const AppointmentMutations = {
   confirmAppointment: {
     type: AppointmentType,
     args: { id: { type: GraphQLID } },
-    resolve(_, args) {
-      return Appointment.findByIdAndUpdate(args.id, { confirmed: true }, { new: true })
+    async resolve(_, args, context) {
+      await adminProtect(context)
+      return await Appointment.findByIdAndUpdate(args.id, { confirmed: true }, { new: true })
     }
   },
   deleteAppointment: {
     type: AppointmentType,
     args: { id: { type: GraphQLID } },
-    resolve(_, args) {
-      return Appointment.findByIdAndDelete(args.id)
+    async resolve(_, args, context) {
+      await adminProtect(context)
+      return await Appointment.findByIdAndDelete(args.id)
     }
   }
 }

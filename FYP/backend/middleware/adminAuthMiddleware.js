@@ -19,7 +19,7 @@ const adminProtect = async (context) => {
 
     if (!admin) throw new Error("Admin not found")
 
-    context.admin = admin;
+    context.admin = admin
   } catch (error) {
     throw new Error("Not authorized as admin")
   }

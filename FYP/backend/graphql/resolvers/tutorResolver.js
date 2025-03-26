@@ -1,11 +1,27 @@
 const Tutor = require("../../models/Tutor")
 const TutorType = require("../types/TutorType")
 const { protect } = require("../../middleware/authMiddleware")
+const { adminProtect } = require("../../middleware/adminAuthMiddleware")
 const generateToken = require("../../config/generateTokens")
-const { GraphQLList, GraphQLID, GraphQLString, GraphQLFloat } = require("graphql")
+const { 
+  GraphQLList, 
+  GraphQLID, 
+  GraphQLString, 
+  GraphQLFloat, 
+  GraphQLObjectType,
+  GraphQLInputObjectType
+} = require("graphql")
+
+const InputWorkingHoursType = new GraphQLInputObjectType({
+  name: "InputWorkingHours",
+  fields: {
+    day: { type: GraphQLString },
+    startTime: { type: GraphQLString },
+    endTime: { type: GraphQLString }
+  }
+})
 
 const TutorQueries = {
-  tutors: {
   // query {
   //   tutors {
   //     id
@@ -13,34 +29,43 @@ const TutorQueries = {
   //     email
   //     hourlyRate
   //     subjects
+  //     image
+  //     workingHours {
+  //       day
+  //       startTime
+  //       endTime
+  //     }
   //   }
   // }
-  type: new GraphQLList(TutorType),
+  tutors: {
+    type: new GraphQLList(TutorType),
     async resolve(_, args, context) {
-      // Use the protect middleware to authenticate the request
-      await protect(context)
+      await protect(context) 
       return await Tutor.find()
     }
   },
   // query {
-  //   tutor(id: "67e157db2c8660f2a4976b59") {
+  //   tutor(id: "TUTOR_ID") {
   //     id
   //     name
   //     email
   //     hourlyRate
   //     subjects
+  //     image
+  //     workingHours {
+  //       day
+  //       startTime
+  //       endTime
+  //     }
   //   }
-  // }  
+  // }
   tutor: {
     type: TutorType,
     args: { id: { type: GraphQLID } },
     async resolve(_, args, context) {
-      // Use the protect middleware to authenticate the request
       await protect(context)
       const tutor = await Tutor.findById(args.id)
-      if (!tutor) {
-        throw new Error("Tutor not found")
-      }
+      if (!tutor) throw new Error("Tutor not found")
       return tutor
     },
   },
@@ -54,15 +79,26 @@ const TutorMutations = {
   //     password: "password123"
   //     hourlyRate: 50.0
   //     subjects: ["Math", "Science"]
+  //     image: "profile.jpg"
+  //     workingHours: [
+  //       { day: "Monday", startTime: "09:00", endTime: "17:00" },
+  //       { day: "Wednesday", startTime: "10:00", endTime: "16:00" }
+  //     ]
   //   ) {
   //     id
   //     name
   //     email
   //     hourlyRate
   //     subjects
+  //     image
+  //     workingHours {
+  //       day
+  //       startTime
+  //       endTime
+  //     }
   //     token
   //   }
-  // }  
+  // }
   addTutor: {
     type: TutorType,
     args: {
@@ -71,42 +107,105 @@ const TutorMutations = {
       password: { type: GraphQLString },
       hourlyRate: { type: GraphQLFloat },
       subjects: { type: new GraphQLList(GraphQLString) },
+      image: { type: GraphQLString },
+      workingHours: { type: new GraphQLList(InputWorkingHoursType) }
     },
     async resolve(_, args) {
-      try {
-        const existingTutor = await Tutor.findOne({ email: args.email })
-        if (existingTutor) {
-          throw new Error("A tutor with this email already exists.")
-        }
-        const tutor = new Tutor({
-          name: args.name,
-          email: args.email,
-          password: args.password,
-          hourlyRate: args.hourlyRate,
-          subjects: args.subjects
-        })
-        const savedTutor = await tutor.save()
-        const token = generateToken(savedTutor._id)
-        savedTutor.token = token
-        return savedTutor
-      } catch (error) {
-        console.error("Error in addTutor mutation:", error)
-        throw new Error("Could not save tutor.")
+      const existingTutor = await Tutor.findOne({ email: args.email })
+      if (existingTutor) {
+        throw new Error("Tutor with this email already exists")
+      }
+      const tutor = new Tutor({
+        name: args.name,
+        email: args.email,
+        password: args.password,
+        hourlyRate: args.hourlyRate,
+        subjects: args.subjects,
+        image: args.image,
+        workingHours: args.workingHours
+      })
+      const savedTutor = await tutor.save()
+      const token = generateToken(savedTutor.id)
+      return {
+        ...savedTutor._doc,
+        id: savedTutor.id,
+        token 
       }
     }
   },
-  deleteTutor: {
   // mutation {
-  //   deleteTutor(id: "67e157db2c8660f2a4976b59") {
+  //   updateTutor(
+  //     id: "TUTOR_ID"
+  //     name: "Updated Name"
+  //     hourlyRate: 60
+  //     subjects: ["English", "Physics"]
+  //     image: "new-profile.jpg"
+    // ) {
+    //   id
+    //   name
+    //   email
+    //   hourlyRate
+    //   subjects
+    //   image
+    //   workingHours {
+    //     day
+    //     startTime
+    //     endTime
+    //   }
+  //   }
+  // }
+  updateTutor: {
+    type: TutorType,
+    args: {
+      id: { type: GraphQLID },
+      name: { type: GraphQLString },
+      email: { type: GraphQLString },
+      password: { type: GraphQLString },
+      hourlyRate: { type: GraphQLFloat },
+      subjects: { type: new GraphQLList(GraphQLString) },
+      image: { type: GraphQLString },
+      workingHours: { type: new GraphQLList(InputWorkingHoursType) }
+    },
+    async resolve(_, args, context) {
+      await protect(context)
+  
+      const updateFields = {}
+  
+      if (args.name !== undefined) updateFields.name = args.name
+      if (args.email !== undefined) updateFields.email = args.email
+      if (args.password !== undefined) {
+        updateFields.password = await require("bcryptjs").hash(args.password, 10)
+      }
+      if (args.hourlyRate !== undefined) updateFields.hourlyRate = args.hourlyRate
+      if (args.subjects !== undefined) updateFields.subjects = args.subjects
+      if (args.image !== undefined) updateFields.image = args.image
+  
+      if (args.workingHours !== undefined) {
+        args.workingHours.forEach(entry => {
+          if (!entry.day || !entry.startTime || !entry.endTime) {
+            throw new Error("Each working hour entry must include day, startTime, and endTime.")
+          }
+        })
+        updateFields.workingHours = args.workingHours
+      }
+  
+      const updatedTutor = await Tutor.findByIdAndUpdate(args.id, updateFields, { new: true })
+      if (!updatedTutor) throw new Error("Tutor not found")
+  
+      return updatedTutor
+    }
+  },  
+  // mutation {
+  //   deleteTutor(id: "TUTOR_ID") {
   //     id
   //     name
   //   }
-  // }    
+  // }
+  deleteTutor: {
     type: TutorType,
     args: { id: { type: GraphQLID } },
     async resolve(_, args, context) {
-      // Use the protect middleware to authenticate the request
-      await protect(context)
+      await adminProtect(context)
       return Tutor.findByIdAndDelete(args.id)
     }
   }

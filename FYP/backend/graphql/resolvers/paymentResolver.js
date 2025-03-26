@@ -44,10 +44,11 @@ const PaymentMutations = {
       id: { type: GraphQLID },
       status: { type: GraphQLString }
     },
-    resolve(_, args) {
-      return Payment.findByIdAndUpdate(args.id, { status: args.status }, { new: true })
+    async resolve(_, args, context) {
+      await adminProtect(context)
+      return await Payment.findByIdAndUpdate(args.id, { status: args.status }, { new: true })
     }
-  }
+  }    
 }
 
 module.exports = { PaymentQueries, PaymentMutations }

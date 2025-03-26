@@ -1,5 +1,5 @@
-const { AuthResolvers } = require("./resolvers/authResolver")
 const { GraphQLSchema, GraphQLObjectType } = require("graphql")
+const { authMutations } = require("./resolvers/authResolver")
 const { TutorQueries, TutorMutations } = require("./resolvers/tutorResolver")
 const { AdminMutations, AdminQueries } = require("./resolvers/adminResolver")
 const { ReviewQueries, ReviewMutations } = require("./resolvers/reviewResolver")
@@ -26,7 +26,7 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
-    ...AuthResolvers,
+    ...authMutations,
     ...AdminMutations,
     ...TutorMutations,
     ...ReviewMutations,
