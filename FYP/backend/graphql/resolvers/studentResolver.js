@@ -117,7 +117,7 @@ const StudentMutations = {
       image: { type: GraphQLString }
     },
     async resolve(_, args, context) {
-      await protect(context) // Ensure the student (or authorized user) is authenticated
+      await protect(context)
       const { id, name, email, password, weakPoints, enrolledCourses, image } = args
       if (
         name === undefined &&
