@@ -185,6 +185,12 @@ const TutorMutations = {
           if (!entry.day || !entry.startTime || !entry.endTime) {
             throw new Error("Each working hour entry must include day, startTime, and endTime.")
           }
+  
+          // Validate time format HH:MM and range 00:00 - 23:59
+          const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+          if (!timeRegex.test(entry.startTime) || !timeRegex.test(entry.endTime)) {
+            throw new Error(`Invalid time format: ${entry.startTime} - ${entry.endTime}. Use HH:MM format (00:00 - 23:59).`);
+          }
         })
         updateFields.workingHours = args.workingHours
       }
