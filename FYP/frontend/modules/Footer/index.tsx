@@ -1,5 +1,5 @@
 import React from "react"
-import FooterLogo from "../../static/logo.png"
+import FooterLogo from "../../static/tutormelogo.png"
 import FacebookImage from "../../static/facebook.png"
 import LinkedInImage from "../../static/LinkedIn.png"
 import InstagramImage from "../../static/instagram.png"
@@ -23,8 +23,6 @@ export default function Footer() {
               <Image 
               src={FacebookImage}
               alt="Logo"
-              width={20}
-              height={20}
               className="social-image"> 
               </Image>
             </a>
@@ -32,8 +30,6 @@ export default function Footer() {
               <Image 
               src={LinkedInImage}
               alt="Logo"
-              width={20}
-              height={20}
               className="social-image"> 
               </Image>
             </a>
@@ -41,8 +37,6 @@ export default function Footer() {
               <Image 
               src={InstagramImage}
               alt="Logo"
-              width={20}
-              height={20}
               className="social-image"> 
               </Image>
             </a>  

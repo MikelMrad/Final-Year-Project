@@ -1,6 +1,6 @@
 import Image from "next/image"
 import styles from "./style.module.css"
-import Logo from "../../static/logo.png"
+import Logo from "../../static/tutormelogo.png"
 import User from "../../static/user-interface.png"
 import Cart from "../../static/market.png"
 import { useAppSelector } from "@/redux/store"
@@ -20,14 +20,14 @@ export default function Home() {
         <a href="/">
         <Image 
         src={Logo}
-        height={100}  
+        height={40}  
         alt='Logo'>
         </Image>
         </a>
       </div>
       <div className={styles.navLinks}>
         <a href='/'>Home</a>
-        <a href='/Store'>Shop Now</a>
+        <a href='/Store'>Learn Now</a>
         <a href='/AboutUs'>About Us</a>
         <a href='/ContactUs'>Contact Us</a>
       </div>

@@ -4,8 +4,8 @@ import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import styles from "./style.module.css"
-import image1 from "../../static/banner4.jpg"
-import image2 from "../../static/banner3.jpg"
+import image1 from "../../static/banner5.png"
+import image2 from "../../static/banner6.jpg"
 import Image from "next/image"
 
 
@@ -78,10 +78,6 @@ export default function Banner() {
                   src={slide.image}
                   alt={`Banner image: ${slide.id}`}
                 />
-              </div>
-              <div className={styles.bannerText}>
-                <h1>{slide.title}</h1>
-                <a href="">{slide.description}</a>
               </div>
             </div>
           ))}

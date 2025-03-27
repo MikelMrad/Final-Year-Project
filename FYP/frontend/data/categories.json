@@ -2,26 +2,26 @@
     {
         "id": "men",
         "label": "Men",
-        "icon": "/static/man.png"
+        "icon": "/static/tutormelogo.png"
     },
     {
         "id": "women",
         "label": "Women",
-        "icon": "/static/woman.png"
+        "icon": "/static/tutormelogo.png"
     },
     {
         "id": "kids",
         "label": "Kids",
-        "icon": "/static/baby-boy.png"
+        "icon": "/static/tutormelogo.png"
     },
     {
         "id": "accessories",
         "label": "Accessories",
-        "icon": "/static/earrings.png"
+        "icon": "/static/tutormelogo.png"
     },
     {
         "id": "footwear",
         "label": "Footwear",
-        "icon": "/static/shoes.png"
+        "icon": "/static/tutormelogo.png"
     }
 ]
