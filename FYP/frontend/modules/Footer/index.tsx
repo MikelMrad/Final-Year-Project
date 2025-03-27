@@ -22,22 +22,21 @@ export default function Footer() {
             <a href="">
               <Image 
               src={FacebookImage}
-              alt="Logo"
-              className="social-image"> 
+              alt="Logo"> 
               </Image>
             </a>
             <a href="">
+              <div className={styles.socialImageContainer}>
               <Image 
               src={LinkedInImage}
-              alt="Logo"
-              className="social-image"> 
+              alt="Logo"> 
               </Image>
+              </div>
             </a>
             <a href="">
               <Image 
               src={InstagramImage}
-              alt="Logo"
-              className="social-image"> 
+              alt="Logo"> 
               </Image>
             </a>  
           </div>
