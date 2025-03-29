@@ -1,53 +1,37 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 interface InitialState {
-  value: LoginState
+  isLoggedIn: boolean
+  token: string | null
+  username: string
+  email: string
 }
 
-interface LoginState  {
-  isLoggedIn: boolean,
-  username: string,
-  email:  string, 
-  birthday:  string, 
-  uid:  string, 
-}
+const initialState: InitialState = {
+  isLoggedIn: false,
+  token: null,
+  username: "",
+  email: "",
+};
 
-interface Action {
-  username: string,
-  email:  string, 
-  birthday:  string, 
-}
-
-const initialState = {
-  value:{
-    isLoggedIn: false,
-    username: "",
-    email:  "", 
-    birthday:  "", 
-    uid:  "", 
-  }as LoginState, 
-} as InitialState
-
-export const login = createSlice({
+export const loginSlice = createSlice({
   name: "login",
   initialState,
   reducers: {
-    logOut: () => {
-      return initialState
+    logIn: (state, action: PayloadAction<{ token: string; username: string; email: string }>) => {
+      state.isLoggedIn = true
+      state.token = action.payload.token
+      state.username = action.payload.username
+      state.email = action.payload.email
     },
-    logIn: (_, action: PayloadAction<Action>) => {
-      return {
-        value:{
-          isLoggedIn:true,
-          username: action.payload.username,
-          email: action.payload.email,
-          birthday: action.payload.birthday,
-          uid: "123wr234rsaf2",
-        }
-      }
+    logOut: (state) => {
+      state.isLoggedIn = false
+      state.token = null
+      state.username = ""
+      state.email = ""
     },
-  }
+  },
 })
 
-export const {logOut, logIn} = login.actions
-export default login.reducer
+export const { logIn, logOut } = loginSlice.actions
+export default loginSlice.reducer

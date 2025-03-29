@@ -1,7 +1,7 @@
 'use client'
 import "./globals.css"
 import React from "react"
-import client from '../../apolloClient/apolloClient'
+import client from '../../apollo/apolloClient'
 import { Provider } from "react-redux"
 import { ApolloProvider } from '@apollo/client'
 import { store, persistor } from "../redux/store"

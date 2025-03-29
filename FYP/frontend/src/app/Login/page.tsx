@@ -1,66 +1,66 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import styles from "./style.module.css"
 import Image from "next/image"
 import Logo from "../../../static/logo.png"
-import { useState } from 'react'
-import { logIn , logOut } from "@/redux/features/loginSlice"
+import { logIn, logOut } from "@/redux/features/loginSlice"
 import { useDispatch } from 'react-redux'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import Footer from '../../../modules/Footer'
+import { useRouter } from 'next/navigation'
+import { useMutation } from "@apollo/client";
+import { LOGIN_TUTOR_MUTATION } from "@/data/queries";
+import { GET_TUTOR_QUERY } from './../../data/queries';
 
-
-export default function page (){
-
+export default function Page() {
   const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter()
+  const username = useAppSelector((state) => state.login.username)
 
-  const username = useAppSelector((state) => state.login.value.username)
+  const [userEmail, setUserEmail] = useState("")
+  const [password, setPassword] = useState("")
 
-  const [userFname , setUserFname] = useState("")
-  const [userLname , setUserLname] = useState("")
-  const [email , setEmail] = useState("")
-  const [birthday , setBirthday] = useState("")
+  const [login] = useMutation(LOGIN_TUTOR_MUTATION);
 
-  const onclickLogIn = () => {
-    const actionPayload = {
-      username: userFname + " " + userLname,
-      email: email,
-      birthday: birthday,
+  const onclickLogIn = async () => {
+    try {
+      const { data } = await login({
+        variables: { email: userEmail, password: password },
+      });
+
+      localStorage.setItem("token", data.login.token);
+      dispatch(logIn({ token: data.login.token, username: data.login.username, email: data.login.email }));
+      alert("Login successful!");
+    } catch (error) {
+      console.error(error)
+      alert("Invalid credentials!")
     }
-    localStorage.setItem('token', 'your-jwt-token')
-    dispatch(logIn(actionPayload))
   }
+
   const onclickLogOut = () => {
+    localStorage.removeItem('token')
     dispatch(logOut())
   }
 
   return (
     <div className={styles.container}>
-      <div className={styles.logo}>
-        <a href="/">
-        <Image 
-        src={Logo}
-        height={100}
-        alt='Logo'>
-        </Image>
-        </a>
-      </div>
-      <div className={styles.formContainer}>
-        <div className={styles.form}>
-        <label>First name:   </label>
-        <input type="text" onChange={(e)=>setUserFname(e.target.value)}/> <br/><br/>
-        <label>Last name:   </label>
-        <input type="text" onChange={(e)=>setUserLname(e.target.value)}/> <br/><br/>
-        <label>Email:   </label>
-        <input type="text" onChange={(e)=>setEmail(e.target.value)}/> <br/><br/>
-        <label>Birthday:   </label>
-        <input type="date" onChange={(e)=>setBirthday(e.target.value)}/> <br/><br/>
-        <a onClick={onclickLogIn}>Login</a>
-        <a onClick={onclickLogOut}>Log out</a>
+      <div className={styles.loginSection}>
+        <div className={styles.formContainer}>
+          <h2>Sign In</h2>
+          <div className={styles.form}>
+            <label>Email</label>
+            <input type="text" placeholder="Email" onChange={(e) => setUserEmail(e.target.value)} />
+            <label>Password</label>
+            <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+            <button className={styles.signInButton} onClick={onclickLogIn}>Sign In</button>
+          </div>
         </div>
-        <p>{username}</p>
-      </div>  
-      <Footer/>
+        <div className={styles.welcomeSection}>
+          <h2>Welcome to TutorMe</h2>
+          <p>Don't have an account?</p>
+          <button className={styles.signUpButton} onClick={() => router.push('/signUp')}>Sign Up</button>
+        </div>
+      </div>
     </div>
   )
 }

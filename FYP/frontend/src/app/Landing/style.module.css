@@ -36,6 +36,26 @@
 .images img{
   width: 20%;
   height: auto;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+.images img:hover {
+  transform: scale(1.05);
+}
+.images img::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.8s ease; 
+  z-index: 1;
+}
+.images img:hover::before {
+  opacity: 1;
 }
 .subject{
   display: flex;

@@ -10,7 +10,7 @@ import Footer from "../../../modules/Footer/index"
 import { useAppSelector } from '@/redux/store'
 export default function page() {
 
-  const username = useAppSelector((state) => state.login.value.username)
+  const username = useAppSelector((state) => state.login.username)
 
   return (
     <div>
@@ -68,8 +68,23 @@ export default function page() {
               Arabic
             </div>
           </div>
-          <div className={styles.subjectsContainer}>
-
+          <div className={styles.images}>
+            <div className={styles.subject}>
+              <img src='../../../static/subjects/logarithm.png' alt='Subject Picture'></img>
+              Algebra
+            </div>
+            <div className={styles.subject}>
+            <img src='../../../static/subjects/algebra.png' alt='Subject Picture'></img>
+              Calculus
+            </div>
+            <div className={styles.subject}>
+            <img src='../../../static/subjects/philosophy.png' alt='Subject Picture'></img>
+              Philosophy
+            </div>
+            <div className={styles.subject}>
+            <img src='../../../static/subjects/monitor.png' alt='Subject Picture'></img>
+              Information Technology
+            </div>
           </div>
         </div>
         <div className={styles.infoContainer}>
