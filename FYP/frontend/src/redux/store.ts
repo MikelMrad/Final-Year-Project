@@ -5,16 +5,17 @@ import loginReducer from "./features/loginSlice"
 import cartReducer from './features/cartSlice'
 import categoryReducer from './features/categorySlice'
 import productReducer from './features/productSlice'
+import userReducer from './features/userSlice'
 import logger from 'redux-logger'
-
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import { combineReducers } from 'redux'
+import { use } from "react"
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['login', 'cart', 'category', 'product'],
+  whitelist: ['login', 'cart', 'category', 'product' , 'user'],
 }
 
 const rootReducer = combineReducers({
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   cart: cartReducer,
   category: categoryReducer,
   product: productReducer,
+  user: userReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

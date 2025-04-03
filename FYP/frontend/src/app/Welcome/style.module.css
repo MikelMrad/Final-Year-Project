@@ -1,8 +1,171 @@
-.container {
-  background-image: url("/static/welcomebg.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center; /* Optional: Center the image */
-  height: 100vh; /* Optional: Set height to ensure the container is visible */
-  width: 100%; /* Optional: Set width to ensure the container is visible */
+.mainContainer {
+  position: relative;
+  min-height: 100vh;
+  background: #f8f9fa;
 }
+
+.wavyBackground {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.mainHeading {
+  font-size: 2.8rem;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.headingAccent {
+  color: #2980b9;
+  font-weight: 700;
+}
+
+.leftContainer {
+  width: 40%;
+  padding: 0 3rem 0 3rem;
+}
+
+.rightContainer {
+  width: 30%;
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+.authContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.authHeading {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.authButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 2rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  color: white;
+  background: #2980b9;
+}
+
+.studentButton {
+  background: linear-gradient(135deg, #2980b9, #2c3e50);
+}
+
+.tutorButton {
+  background: linear-gradient(135deg, #27ae60, #21935c);
+}
+
+.authButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.buttonIcon {
+  font-size: 1.3rem;
+  margin-right: 1rem;
+}
+
+.arrowIcon {
+  font-size: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.authButton:hover .arrowIcon {
+  transform: translateX(3px);
+}
+
+.animatedText {
+  line-height: 1.7;
+  color: #34495e;
+  margin: 1.2rem 0;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: textAppear 0.1s forwards;
+}
+
+@keyframes textAppear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.statsContainer {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+.statItem {
+  text-align: center;
+  background: rgba(255,255,255,0.9);
+  padding: 1.2rem;
+  border-radius: 10px;
+  flex: 1;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.statItem h3 {
+  color: #2980b9;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.statItem p {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    padding: 2rem 1rem;
+  }
+
+  .leftContainer, .rightContainer {
+    width: 100%;
+    padding: 1.5rem;
+  }
+
+  .mainHeading {
+    font-size: 2rem;
+  }
+
+  .statsContainer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.contentWrapper {
+  min-height: 250px;
+}
+
