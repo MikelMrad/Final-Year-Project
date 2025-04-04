@@ -169,3 +169,22 @@
   min-height: 250px;
 }
 
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.statItem h3 {
+  color: #2980b9;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: countUp 0.8s ease-out forwards;
+}

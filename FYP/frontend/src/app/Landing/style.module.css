@@ -3,6 +3,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
+  overflow-y: auto;
+  padding-bottom: 50px; /* Add space for footer */
 }
 .infoContainer {
   margin-top: 20px;
@@ -67,6 +70,6 @@
   filter: brightness(0) saturate(100%) invert(74%) sepia(83%) saturate(2177%) hue-rotate(357deg) brightness(99%) contrast(102%);
 }
 .infoImage{
-  width: 100%;
+  width: 50rem;
   height: auto;
 }

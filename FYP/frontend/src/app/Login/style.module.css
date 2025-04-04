@@ -82,10 +82,13 @@
 .signUpButton {
   background: #fff;
   color: #ffb001;
+  margin: 1px;
 }
 
 .signUpButton:hover {
   background: #ffb001;
+  margin: 0px;
+  border: solid 1px #fff;
   color: #fff;
 }
 

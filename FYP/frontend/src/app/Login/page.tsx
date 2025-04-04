@@ -8,38 +8,92 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import Footer from '../../../modules/Footer'
 import { useRouter } from 'next/navigation'
-import { useMutation } from "@apollo/client";
-import { LOGIN_TUTOR_MUTATION } from "@/data/queries";
-import { GET_TUTOR_QUERY } from './../../data/queries';
+import { useMutation } from "@apollo/client"
+import { LOGIN_TUTOR_MUTATION } from "@/data/queries"
+import { setUser } from "@/redux/features/userSlice"
+
+interface LoginResponse {
+  loginTutor: {
+    id: string
+    name: string
+    email: string
+    token: string
+  }
+}
+
+interface LoginVariables {
+  email: string
+  password: string
+}
 
 export default function Page() {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
-  const username = useAppSelector((state) => state.login.username)
-
   const [userEmail, setUserEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [login] = useMutation<LoginResponse, LoginVariables>(LOGIN_TUTOR_MUTATION)
 
-  const [login] = useMutation(LOGIN_TUTOR_MUTATION);
-
-  const onclickLogIn = async () => {
-    try {
-      const { data } = await login({
-        variables: { email: userEmail, password: password },
-      });
-
-      localStorage.setItem("token", data.login.token);
-      dispatch(logIn({ token: data.login.token, username: data.login.username, email: data.login.email }));
-      alert("Login successful!");
-    } catch (error) {
-      console.error(error)
-      alert("Invalid credentials!")
+  const validateForm = (): boolean => {
+    if (!userEmail || !password) {
+      alert("Please fill in all fields")
+      return false
     }
+    if (!userEmail.includes("@")) {
+      alert("Please enter a valid email address") 
+      return false
+    }
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters long")
+      return false
+    }
+    return true
   }
 
-  const onclickLogOut = () => {
-    localStorage.removeItem('token')
-    dispatch(logOut())
+  const onclickLogIn = async (): Promise<void> => {
+    if (!validateForm()) return
+    
+    setLoading(true)
+    try {
+      const { data } = await login({
+        variables: { 
+          email: userEmail, 
+          password 
+        },
+        context: {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      })
+
+      if (!data?.loginTutor) {
+        throw new Error('No data returned from login')
+      }
+
+      const { token, id, name, email } = data.loginTutor
+      
+      localStorage.setItem("token", token)
+      dispatch(logIn({ token, username: name, email }))
+      dispatch(setUser({ name, email, type: "tutor", token }))
+
+      router.push("/Landing")
+    } catch (err) {
+      let errorMessage = "Login failed!"
+      if (err instanceof Error) {
+        if (err.message.includes('405')) {
+          errorMessage = "Server error: Invalid request method. Please try again later."
+        } else if (err.message.includes('Network')) {
+          errorMessage = "Network error. Please check your connection."
+        } else {
+          errorMessage = err.message
+        }
+      }
+      console.error(errorMessage)
+      alert(errorMessage)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -49,16 +103,35 @@ export default function Page() {
           <h2>Sign In</h2>
           <div className={styles.form}>
             <label>Email</label>
-            <input type="text" placeholder="Email" onChange={(e) => setUserEmail(e.target.value)} />
+            <input 
+              type="text" 
+              placeholder="Email" 
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserEmail(e.target.value)}
+            />
             <label>Password</label>
-            <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-            <button className={styles.signInButton} onClick={onclickLogIn}>Sign In</button>
+            <input 
+              type="password" 
+              placeholder="Password" 
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+            />
+            <button 
+              className={styles.signInButton} 
+              onClick={onclickLogIn}
+              disabled={loading}
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </button>
           </div>
         </div>
         <div className={styles.welcomeSection}>
           <h2>Welcome to TutorMe</h2>
           <p>Don't have an account?</p>
-          <button className={styles.signUpButton} onClick={() => router.push('/signUp')}>Sign Up</button>
+          <button 
+            className={styles.signUpButton} 
+            onClick={() => router.push('/signUp')}
+          >
+            Sign Up
+          </button>
         </div>
       </div>
     </div>

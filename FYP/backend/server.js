@@ -1,5 +1,6 @@
 const express = require("express")
 const dotenv = require("dotenv").config()
+const cors = require("cors")
 const { errorHandler } = require("./middleware/errorMiddleware")
 const colors = require("colors")
 const connectDb = require("./config/db")
@@ -12,6 +13,13 @@ connectDb()
 
 const app = express()
 
+app.use(cors({
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST"],
+  credentials: true
+}))
+
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
@@ -23,10 +31,10 @@ app.use(
       headerEditorEnabled: true, 
       docExplorerEnabled: true,
     },
-    context: { req }, 
+    context: { req },
   }))
 )
 
 app.use(errorHandler)
 
-app.listen(port, () => console.log(`Server running on port ${port}`))
+app.listen(port, () => console.log(`Server running on port ${port}`.green.bold))
