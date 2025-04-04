@@ -7,7 +7,7 @@ import { FaGraduationCap, FaChalkboardTeacher, FaArrowRight } from 'react-icons/
 
 const Page = () => {
   const phrases: string[] = [
-    "Empowering students aged 15-18 with personalized learning solutions.",
+    "Empowering students aged 15 and up with personalized learning solutions.",
     "Connect with expert tutors in STEM, Humanities, and College Prep.",
     "Take control of your academic future - start your journey today."
   ]
@@ -25,7 +25,7 @@ const Page = () => {
         <div className={styles.leftContainer}>
           <div className={styles.contentSection}>
             <h1 className={styles.mainHeading}>
-              <span className={styles.headingAccent}>TutorMe</span> Academy
+              <span className={styles.headingAccent}>TutorMe™</span> Academy
             </h1>
             
             <div className={styles.contentWrapper}>
@@ -61,7 +61,7 @@ const Page = () => {
         {/* Right Panel with Buttons */}
         <div className={styles.rightContainer}>
           <div className={styles.authContainer}>
-            <h2 className={styles.authHeading}>Begin Your Journey</h2>
+            <h2 className={styles.authHeading}>Begin Your Journey Now !!</h2>
             <button className={`${styles.authButton} ${styles.studentButton}`}>
               <FaGraduationCap className={styles.buttonIcon} />
               <span>Student Portal</span>
