@@ -1,0 +1,114 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to right, #fff, #ffb001);
+}
+
+.loginSection {
+  display: flex;
+  width: 50%;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.formContainer {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "Roboto Condensed", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.formContainer h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.form {
+  width: 100%;
+  max-width: 300px;
+}
+
+.form label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; /* Include padding and border in the element's total width */
+}
+
+.form input, .signInButton {
+  width: 100%; /* Ensure both inputs and the button take the full width of their container */
+  box-sizing: border-box; /* Include padding and border in the element's total width */
+}
+
+.signInButton, .signUpButton {
+  width: 100%; /* Ensure both buttons take the full width of their container */
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.signInButton {
+  background: #ffb001;
+  color: #fff;
+}
+
+.signInButton:hover {
+  background: #e09c00;
+}
+
+.signUpButton {
+  background: #fff;
+  color: #ffb001;
+  margin: 1px;
+}
+
+.signUpButton:hover {
+  background: #ffb001;
+  margin: 0px;
+  border: solid 1px #fff;
+  color: #fff;
+}
+
+.welcomeSection {
+  flex: 1;
+  background: linear-gradient(to right, #ffc343, #ffb001);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.welcomeSection h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.welcomeSection p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}

@@ -1,20 +1,17 @@
 'use client'
 import React, { useState } from 'react'
 import styles from "./style.module.css"
-import Image from "next/image"
-import Logo from "../../../static/logo.png"
 import { logIn, logOut } from "@/redux/features/loginSlice"
 import { useDispatch } from 'react-redux'
-import { AppDispatch, useAppSelector } from '@/redux/store'
-import Footer from '../../../modules/Footer'
+import { AppDispatch } from '@/redux/store'
 import { useRouter } from 'next/navigation'
 import { useMutation } from "@apollo/client"
-import { LOGIN_TUTOR_MUTATION } from "@/data/queries"
+import { LOGIN_STUDENT_MUTATION } from "@/data/queries"
 import { setUser } from "@/redux/features/userSlice"
 
 interface LoginResponse {
-  loginTutor: {
-    id: string
+  loginStudent: {
+    id: string 
     name: string
     email: string
     token: string
@@ -32,7 +29,7 @@ export default function Page() {
   const [userEmail, setUserEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
-  const [login] = useMutation<LoginResponse, LoginVariables>(LOGIN_TUTOR_MUTATION)
+  const [login] = useMutation<LoginResponse, LoginVariables>(LOGIN_STUDENT_MUTATION)
 
   const validateForm = (): boolean => {
     if (!userEmail || !password) {
@@ -67,15 +64,15 @@ export default function Page() {
         }
       })
 
-      if (!data?.loginTutor) {
+      if (!data?.loginStudent) {
         throw new Error('No data returned from login')
       }
 
-      const { token, id, name, email } = data.loginTutor
+      const { token, id, name, email } = data.loginStudent
       
       localStorage.setItem("token", token)
       dispatch(logIn({ token, username: name, email }))
-      dispatch(setUser({ name, email, type: "tutor", token }))
+      dispatch(setUser({ name, email, type: "student", token }))
 
       router.push("/Landing")
     } catch (err) {

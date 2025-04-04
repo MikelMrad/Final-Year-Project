@@ -23,7 +23,7 @@ const Page = () => {
 
   const handleButtonClick = (type: "tutor" | "student") => {
     dispatch(setUser({ name: "", email: "", type, token: "" }))
-    router.push('/Login')
+    type === "student" ? router.push('/StudentLogin') : router.push('/TutorLogin')
   }
 
   const [students, setStudents] = useState(0)
