@@ -1,5 +1,6 @@
 const Subject = require("../../models/Subject")
 const SubjectType = require("../types/SubjectType")
+const { adminProtect } = require("../../middleware/adminAuthMiddleware")
 const { GraphQLList, GraphQLID, GraphQLString } = require("graphql")
 
 const SubjectQueries = {
@@ -12,6 +13,12 @@ const SubjectQueries = {
 }
 
 const SubjectMutations = {
+  // mutation {
+  //   addSubject(name: "Physics") {
+  //     id
+  //     name
+  //   }
+  // }
   addSubject: {
     type: SubjectType,
     args: { name: { type: GraphQLString } },

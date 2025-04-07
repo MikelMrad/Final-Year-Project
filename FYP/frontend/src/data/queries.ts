@@ -11,16 +11,16 @@ export const LOGIN_TUTOR_MUTATION = gql`
   }
 `;
 
-export const REGISTER_TUTOR_MUTATION = gql`
-  mutation RegisterTutor($name: String!, $email: String!, $password: String!) {
-    registerTutor(name: $name, email: $email, password: $password) {
-      id
-      name
-      email
-      token
-    }
+export const REGISTER_TUTOR_MUTATION =  gql`
+mutation RegisterTutor($name: String, $email: String, $password: String, $image: String, $hourlyRate: Int, $subjects: [String], $workingHours: [WorkingHourInput]) {
+  registerTutor(name: $name, email: $email, password: $password, image: $image, hourlyRate: $hourlyRate, subjects: $subjects, workingHours: $workingHours) {
+    id
+    name
+    email
+    token
   }
-`;
+}
+`
 
 export const REGISTER_STUDENT_MUTATION = gql`
   mutation RegisterStudent(
@@ -28,17 +28,20 @@ export const REGISTER_STUDENT_MUTATION = gql`
     $email: String!
     $password: String!
     $weakPoints: [String!]
+    $image: String
   ) {
     registerStudent(
       name: $name
       email: $email
       password: $password
       weakPoints: $weakPoints
+      image: $image
     ) {
       id
       name
       email
       weakPoints
+      image
       token
     }
   }
@@ -278,7 +281,6 @@ export const DELETE_STUDENT_MUTATION = gql`
   }
 `;
 
-// Notification Queries
 export const GET_NOTIFICATIONS_QUERY = gql`
   query Notifications {
     notifications {
@@ -320,3 +322,12 @@ export const MARK_NOTIFICATION_AS_READ_MUTATION = gql`
     }
   }
 `;
+
+export const GET_SUBJECTS_QUERY = gql`
+  query GetSubjects {
+    subjects {
+      id
+      name
+    }
+  }
+`

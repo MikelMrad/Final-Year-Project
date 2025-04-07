@@ -5,52 +5,79 @@ const Student = require("../../models/Student")
 const TutorType = require("../types/TutorType")
 const StudentType = require("../types/StudentType")
 const generateToken = require("../../config/generateTokens")
-const { GraphQLString, GraphQLList } = require("graphql")
+const {
+  GraphQLString,
+  GraphQLList,
+  GraphQLInt,
+  GraphQLInputObjectType,
+} = require("graphql")
+
+async function uploadImageToImageKit(base64Image, folder = "users") {
+  try {
+    const uploadResponse = await imagekit.upload({
+      file: base64Image,
+      fileName: `${folder}_${uuidv4()}`,
+      folder: `/${folder}`,
+    });
+
+    return uploadResponse.url;
+  } catch (error) {
+    console.error("Image upload error:", error.message);
+    return "default-avatar.png";
+  }
+}
 
 const authMutations = {
-  // mutation {
-  //   registerTutor(name: "John Doe", email: "john@example.com", password: "password123") {
-  //     id
-  //     name
-  //     email
-  //     token
-  //   }
-  // }
   registerTutor: {
     type: TutorType,
     args: {
       name: { type: GraphQLString },
       email: { type: GraphQLString },
       password: { type: GraphQLString },
+      image: { type: GraphQLString },
+      hourlyRate: { type: GraphQLInt },
+      subjects: { type: new GraphQLList(GraphQLString) },
+      workingHours: {
+        type: new GraphQLList(
+          new GraphQLInputObjectType({
+            name: "WorkingHourInput",
+            fields: {
+              day: { type: GraphQLString },
+              startTime: { type: GraphQLString },
+              endTime: { type: GraphQLString },
+            },
+          })
+        ),
+      },
     },
     async resolve(_, args) {
-      const { name, email, password } = args
-      const existingTutor = await Tutor.findOne({ email })
+      const { name, email, password, image, hourlyRate, subjects, workingHours } = args
+      const normalizedEmail = email.toLowerCase()
+
+      const existingTutor = await Tutor.findOne({ email: normalizedEmail })
       if (existingTutor) {
         throw new Error("Email already in use")
       }
-      const hashedPassword = await bcrypt.hash(password, 10)
       const tutor = new Tutor({
         name,
-        email,
-        password: hashedPassword,
+        email: normalizedEmail,
+        password,
+        image: image || "default-avatar.png",
+        hourlyRate,
+        subjects,
+        workingHours,
       })
+
       await tutor.save()
+
       return {
         ...tutor._doc,
         id: tutor._id,
         token: generateToken(tutor._id),
       }
-    }
+    },
   },
-  // mutation {
-  //   loginTutor(email: "john@example.com", password: "password123") {
-  //     id
-  //     name
-  //     email
-  //     token
-  //   }
-  // }
+
   loginTutor: {
     type: TutorType,
     args: {
@@ -58,32 +85,23 @@ const authMutations = {
       password: { type: GraphQLString },
     },
     async resolve(_, args) {
-      const { email, password } = args
-      const tutor = await Tutor.findOne({ email })
-      if (!tutor) {
-        throw new Error("Tutor not found")
-      }
+      const normalizedEmail = args.email.toLowerCase()
+      const { password } = args
+
+      const tutor = await Tutor.findOne({ email: normalizedEmail })
+      if (!tutor) throw new Error("Tutor not found")
+
       const isMatch = await bcrypt.compare(password, tutor.password)
-      if (!isMatch) {
-        throw new Error("Invalid credentials")
-      }
+      if (!isMatch) throw new Error("Invalid credentials")
+
       return {
         ...tutor._doc,
         id: tutor._id,
         token: generateToken(tutor._id),
       }
-    }
+    },
   },
-  // mutation {
-  //   registerStudent(name: "Alice Johnson", email: "alice@example.com", password: "securepassword", weakPoints: ["Grammar"]) {
-  //     id
-  //     name
-  //     email
-  //     weakPoints
-  //     enrolledCourses
-  //     token
-  //   }
-  // }
+
   registerStudent: {
     type: StudentType,
     args: {
@@ -91,37 +109,34 @@ const authMutations = {
       email: { type: GraphQLString },
       password: { type: GraphQLString },
       weakPoints: { type: new GraphQLList(GraphQLString) },
+      image: { type: GraphQLString },
     },
-    async resolve(_, args) {
-      const { name, email, password, weakPoints } = args
-      const existingStudent = await Student.findOne({ email })
-      if (existingStudent) {
-        throw new Error("A student with this email already exists")
-      }
-      const hashedPassword = await bcrypt.hash(password, 10)
+    async resolve(_, { name, email, password, weakPoints, image }) {
+      const normalizedEmail = email.toLowerCase()
+
+      const existingStudent = await Student.findOne({ email: normalizedEmail })
+      if (existingStudent) throw new Error("A student with this email already exists")
+
+      // Do not hash manually; pass plain text
       const student = new Student({
         name,
-        email,
-        password: hashedPassword,
+        email: normalizedEmail,
+        password,
         enrolledCourses: [],
         weakPoints,
+        image: image || "default-avatar.png",
       })
+
       await student.save()
+
       return {
         ...student._doc,
         id: student._id,
         token: generateToken(student._id),
       }
-    }
+    },
   },
-  // mutation {
-  //   loginStudent(email: "alice@example.com", password: "securepassword") {
-  //     id
-  //     name
-  //     email
-  //     token
-  //   }
-  // }
+
   loginStudent: {
     type: StudentType,
     args: {
@@ -129,22 +144,23 @@ const authMutations = {
       password: { type: GraphQLString },
     },
     async resolve(_, args) {
-      const { email, password } = args
-      const student = await Student.findOne({ email })
-      if (!student) {
-        throw new Error("Student not found")
-      }
+      const normalizedEmail = args.email.toLowerCase()
+      const { password } = args
+
+      const student = await Student.findOne({ email: normalizedEmail })
+      if (!student) throw new Error("Student not found")
+
       const isMatch = await bcrypt.compare(password, student.password)
-      if (!isMatch) {
-        throw new Error("Invalid credentials")
-      }
+      if (!isMatch) throw new Error("Invalid credentials")
+
       return {
         ...student._doc,
         id: student._id,
         token: generateToken(student._id),
       }
-    }
+    },
   },
 }
+
 
 module.exports = { authMutations }

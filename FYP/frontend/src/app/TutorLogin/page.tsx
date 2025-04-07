@@ -54,7 +54,7 @@ export default function Page() {
     try {
       const { data } = await login({
         variables: { 
-          email: userEmail, 
+          email: userEmail.toLowerCase(), 
           password 
         },
         context: {
@@ -103,13 +103,13 @@ export default function Page() {
             <input 
               type="text" 
               placeholder="Email" 
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserEmail(e.target.value)}
+              onChange={(e) => setUserEmail(e.target.value)}
             />
             <label>Password</label>
             <input 
               type="password" 
               placeholder="Password" 
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <button 
               className={styles.signInButton} 
@@ -125,7 +125,7 @@ export default function Page() {
           <p>Don't have an account?</p>
           <button 
             className={styles.signUpButton} 
-            onClick={() => router.push('/signUp')}
+            onClick={() => router.push('/RegisterTutor')}
           >
             Sign Up
           </button>
