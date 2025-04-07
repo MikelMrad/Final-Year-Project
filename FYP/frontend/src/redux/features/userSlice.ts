@@ -5,6 +5,7 @@ interface UserState {
   email: string
   type: "tutor" | "student" | ""
   token: string
+  image: string
 }
 
 const initialState: UserState = {
@@ -12,6 +13,7 @@ const initialState: UserState = {
   email: "",
   type: "",
   token: "",
+  image: "",  
 }
 
 export const userSlice = createSlice({
@@ -19,16 +21,18 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<UserState>) => {
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-      state.type = action.payload.type;
-      state.token = action.payload.token;
+      state.name = action.payload.name
+      state.email = action.payload.email
+      state.type = action.payload.type
+      state.token = action.payload.token
+      state.image = action.payload.image
     },
     clearUser: (state) => {
       state.name = ""
       state.email = ""
       state.type = ""
       state.token = ""
+      state.image = ""
     },
   },
 })

@@ -3,7 +3,7 @@ import React, { useState, FormEvent } from "react"
 import { useMutation, useQuery } from "@apollo/client"
 import { useRouter } from "next/navigation"
 import { useDispatch } from "react-redux"
-import { AppDispatch, useAppSelector } from "@/redux/store"
+import { AppDispatch } from "@/redux/store"
 import { setUser } from "@/redux/features/userSlice"
 import NavBar from "../../../modules/NavBar"
 import Footer from "../../../modules/Footer"
@@ -55,8 +55,23 @@ interface TutorRegisterVariables {
 }
 
 const daysOfWeek = [
-  "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
 ]
+
+const convertToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = (error) => reject(error)
+  })
+}
 
 export default function RegisterTutorPage() {
   const router = useRouter()
@@ -67,6 +82,7 @@ export default function RegisterTutorPage() {
   const [password, setPassword] = useState("")
   const [hourlyRate, setHourlyRate] = useState("")
   const [image, setImage] = useState("")
+  const [imageURL, setImageURL] = useState("")
   const [selectedSubjects, setSelectedSubjects] = useState<Subject[]>([])
   const [workingHours, setWorkingHours] = useState<WorkingHour[]>([])
   const [error, setError] = useState("")
@@ -93,22 +109,32 @@ export default function RegisterTutorPage() {
   const isValidTimeRange = (start: string, end: string): boolean => {
     const [startHour, startMinute] = start.split(":").map(Number)
     const [endHour, endMinute] = end.split(":").map(Number)
-  
-    const startTotalMinutes = startHour * 60 + startMinute
-    const endTotalMinutes = endHour * 60 + endMinute
-  
-    return endTotalMinutes > startTotalMinutes
+    const startTotal = startHour * 60 + startMinute
+    const endTotal = endHour * 60 + endMinute
+    return endTotal > startTotal
   }
-  
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      try {
+        const base64 = await convertToBase64(e.target.files[0])
+        setImageURL(base64)
+      } catch (err) {
+        console.error("Image conversion failed", err)
+        setError("Image upload failed")
+      }
+    }
+  }
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
-  
+
     if (!name || !email || !password || !hourlyRate) {
       setError("Please fill all required fields")
       return
     }
-  
+
     for (let i = 0; i < workingHours.length; i++) {
       const wh = workingHours[i]
       if (!wh.day || !wh.startTime || !wh.endTime) {
@@ -120,10 +146,10 @@ export default function RegisterTutorPage() {
         return
       }
     }
-  
+
     const parsedHourlyRate = parseFloat(hourlyRate)
     const subjectNames = selectedSubjects.map((s) => s.name)
-  
+
     try {
       const { data } = await registerTutor({
         variables: {
@@ -132,11 +158,11 @@ export default function RegisterTutorPage() {
           password,
           hourlyRate: parsedHourlyRate,
           subjects: subjectNames,
-          image: image || undefined,
+          image: imageURL || (image !== "" ? image : undefined),
           workingHours: workingHours.length > 0 ? workingHours : undefined,
         },
       })
-  
+
       if (data?.registerTutor) {
         dispatch(
           setUser({
@@ -144,6 +170,7 @@ export default function RegisterTutorPage() {
             email: data.registerTutor.email,
             type: "tutor",
             token: data.registerTutor.token,
+            image: data.registerTutor.image,
           })
         )
         localStorage.setItem("token", data.registerTutor.token)
@@ -154,7 +181,6 @@ export default function RegisterTutorPage() {
       setError(err.message || "Registration failed")
     }
   }
-  
 
   const subjectOptions = subjectsData?.subjects.map((subject) => ({
     id: subject.id,
@@ -181,6 +207,14 @@ export default function RegisterTutorPage() {
           <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           <TextField label="Hourly Rate" type="number" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} required />
           <TextField label="Image URL (optional)" value={image} onChange={(e) => setImage(e.target.value)} />
+
+          <Box>
+            <Typography variant="body1">Or Upload an Image:</Typography>
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+            {imageURL && (
+              <img src={imageURL} alt="Preview" style={{ width: 100, height: 100, objectFit: "cover", marginTop: 8 }} />
+            )}
+          </Box>
 
           {subjectsLoading ? (
             <Box display="flex" justifyContent="center" my={2}>

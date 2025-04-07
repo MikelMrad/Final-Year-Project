@@ -7,6 +7,7 @@ export const LOGIN_TUTOR_MUTATION = gql`
       name
       email
       token
+      image
     }
   }
 `;

@@ -6,31 +6,34 @@
   justify-content: space-between;
   align-items: center;
   font-family: "Bebas Neue", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  
+  position: relative;
+  z-index: 10;
 }
 
-.navLinks{
-  width: 40%;
+.logo {
+  flex: 1;
+}
+
+.navLinks {
+  flex: 2;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
+  gap: 30px;
+  transition: all 0.3s ease;
 }
 
-.navLinks a{
+.navLinks a {
   text-decoration: none;
   color: black;
   font-size: 28px;
   position: relative;
-  -webkit-background-clip: text;
   transition: all 0.3s ease-in-out;
 }
 
-.navLinks a:before{
+.navLinks a::before {
   content: '';
   background: #000000;
-  display: block;
   position: absolute;
   bottom: -3px;
   left: 0;
@@ -39,30 +42,102 @@
   transition: all 0.3s ease-in-out;
 }
 
-.navLinks a:hover {
-  background-position: 0;
-}
-
-.navLinks  a:hover::before{
+.navLinks a:hover::before {
   width: 100%;
 }
 
-.login{
+.login {
+  flex: 1;
   display: flex;
   align-items: center;
-  justify-content: flex-end;  
-  font-size: 20px;
+  justify-content: flex-end;
+  position: relative;
 }
 
-.login img{
-  margin: 2px 10px;
+.login img {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
 .login img:hover {
-  width: 54px;
-  height: 54px;
-  margin: 0px 8px;
+  transform: scale(1.08);
 }
 
+.dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  min-width: 150px;
+  z-index: 999;
+}
 
-  
+.dropdown a {
+  display: block;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: black;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 22px;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.dropdown a::before {
+  content: '';
+  background: black;
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  transition: width 0.3s ease-in-out;
+}
+
+.dropdown a:hover::before {
+  width: 80%;
+}
+
+.burger {
+  display: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.burger div {
+  width: 25px;
+  height: 3px;
+  background-color: black;
+}
+
+@media (max-width: 880px) {
+  .burger {
+    display: flex;
+  }
+
+  .navLinks {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    flex-direction: column;
+    background: white;
+    width: 100%;
+    padding: 10px 0;
+    display: none;
+    border-top: 1px solid #ccc;
+  }
+
+  .navLinks.open {
+    display: flex;
+  }
+
+  .navLinks a {
+    font-size: 24px;
+    padding: 10px 0;
+  }
+}

@@ -10,7 +10,6 @@ import Footer from "../../../modules/Footer/index"
 import { useAppSelector } from '@/redux/store'
 export default function page() {
 
-  const username = useAppSelector((state) => state.login.username)
 
   return (
     <div>
