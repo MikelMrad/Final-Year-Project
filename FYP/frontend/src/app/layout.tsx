@@ -25,7 +25,7 @@ export default function RootLayout({
       if (typeof window !== 'undefined') {
         window.scrollTo({ top: 0, behavior: 'smooth' })
       }
-    }, 1000)
+    }, 500)
 
     return () => clearTimeout(timer)
   }, [pathname])

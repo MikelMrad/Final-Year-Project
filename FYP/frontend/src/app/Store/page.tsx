@@ -43,7 +43,7 @@ export default function TutorsPage() {
 
   const normalizedWeakPoints = weakPoints.map(point => point.toLowerCase().trim())
 
-  const filteredTutors = tutorsData.tutors.filter((tutor) =>
+  const filteredTutors = tutorsData?.tutors?.filter((tutor) =>
     tutor.subjects.some((subject) =>
       normalizedWeakPoints.includes(subject.toLowerCase().trim())
     )
@@ -56,9 +56,9 @@ export default function TutorsPage() {
     <div>
       <NavBar />
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }} className={styles.container}>
-        {filteredTutors.length > 0 ? (
+        {(filteredTutors?.length ?? 0) > 0 ? (
           <Grid container spacing={4}>
-            {filteredTutors.map((tutor) => (
+            {filteredTutors?.map((tutor) => (
               <Grid key={tutor.id} item xs={12} sm={6} md={4}>
                 <TutorItem
                   id={tutor.id}
