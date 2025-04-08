@@ -55,6 +55,7 @@ export const LOGIN_STUDENT_MUTATION = gql`
       name
       email
       token
+      image
     }
   }
 `;
@@ -92,22 +93,22 @@ export const LOGIN_ADMIN_MUTATION = gql`
 `;
 
 export const GET_TUTORS_QUERY = gql`
-  query Tutors {
+  query GetTutors {
     tutors {
       id
       name
       email
       hourlyRate
-      subjects
       image
       workingHours {
         day
         startTime
         endTime
       }
+      subjects
     }
   }
-`;
+`
 
 export const GET_TUTOR_QUERY = gql`
   query Tutor($id: ID!) {

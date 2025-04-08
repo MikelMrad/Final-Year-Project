@@ -14,7 +14,7 @@ import {
   Typography,
   Button,
   CircularProgress,
-  Grid,
+  Grid2,
   MenuItem,
 } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
@@ -88,7 +88,6 @@ export default function RegisterTutorPage() {
   const [error, setError] = useState("")
 
   const { data: subjectsData, loading: subjectsLoading } = useQuery<{ subjects: Subject[] }>(GET_SUBJECTS_QUERY)
-
   const [registerTutor, { loading }] = useMutation<TutorRegisterResponse, TutorRegisterVariables>(REGISTER_TUTOR_MUTATION)
 
   const addWorkingHour = () => {
@@ -114,6 +113,15 @@ export default function RegisterTutorPage() {
     return endTotal > startTotal
   }
 
+  const isValidEmail = (email: string): boolean => {
+    const regex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    return regex.test(email);
+  }  
+
+  const isValidPassword = (password: string): boolean => {
+    return password.length > 8 && /[A-Z]/.test(password)
+  }
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       try {
@@ -132,6 +140,14 @@ export default function RegisterTutorPage() {
 
     if (!name || !email || !password || !hourlyRate) {
       setError("Please fill all required fields")
+      return
+    }
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address")
+      return
+    }
+    if (!isValidPassword(password)) {
+      setError("Password must be longer than 8 characters and contain at least one uppercase letter")
       return
     }
 
@@ -182,10 +198,9 @@ export default function RegisterTutorPage() {
     }
   }
 
-  const subjectOptions = subjectsData?.subjects.map((subject) => ({
-    id: subject.id,
-    name: subject.name,
-  })) || []
+  const subjectOptions = subjectsData?.subjects
+    .filter(subject => !selectedSubjects.find(sel => sel.name === subject.name))
+    .map(subject => ({ id: subject.id, name: subject.name })) || []
 
   return (
     <div>
@@ -234,8 +249,8 @@ export default function RegisterTutorPage() {
           <Box sx={{ mt: 2 }}>
             <Typography variant="h6" sx={{ mb: 1 }}>Working Hours</Typography>
             {workingHours.map((wh, index) => (
-              <Grid container spacing={2} key={index} alignItems="center" sx={{ mb: 2 }}>
-                <Grid item xs={3}>
+              <Grid2 container spacing={2} key={index} alignItems="center" sx={{ mb: 2 }}>
+                <Grid2 item xs={3}>
                   <TextField
                     select
                     fullWidth
@@ -250,8 +265,8 @@ export default function RegisterTutorPage() {
                       </MenuItem>
                     ))}
                   </TextField>
-                </Grid>
-                <Grid item xs={3}>
+                </Grid2>
+                <Grid2 item xs={3}>
                   <TextField
                     fullWidth
                     label="Start Time *"
@@ -261,8 +276,8 @@ export default function RegisterTutorPage() {
                     InputLabelProps={{ shrink: true }}
                     required
                   />
-                </Grid>
-                <Grid item xs={3}>
+                </Grid2>
+                <Grid2 item xs={3}>
                   <TextField
                     fullWidth
                     label="End Time *"
@@ -272,18 +287,13 @@ export default function RegisterTutorPage() {
                     InputLabelProps={{ shrink: true }}
                     required
                   />
-                </Grid>
-                <Grid item xs={3}>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={() => removeWorkingHour(index)}
-                    fullWidth
-                  >
+                </Grid2>
+                <Grid2 item xs={3}>
+                  <Button variant="outlined" color="error" onClick={() => removeWorkingHour(index)} fullWidth>
                     REMOVE
                   </Button>
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             ))}
 
             <Button variant="contained" onClick={addWorkingHour} sx={{ mt: 1 }}>

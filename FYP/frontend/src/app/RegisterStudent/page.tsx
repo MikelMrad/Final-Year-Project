@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, FormEvent } from "react"
-import { useMutation } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import { useRouter } from "next/navigation"
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "@/redux/store"
@@ -13,18 +13,14 @@ import {
   TextField,
   Typography,
   Button,
-  CircularProgress,
+  CircularProgress
 } from "@mui/material"
-import { REGISTER_STUDENT_MUTATION } from "@/data/queries"
+import Autocomplete from "@mui/material/Autocomplete"
+import { REGISTER_STUDENT_MUTATION, GET_SUBJECTS_QUERY } from "@/data/queries"
 
-// Utility to convert a file to Base64
-const convertToBase64 = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result as string)
-    reader.onerror = (error) => reject(error)
-  })
+interface Subject {
+  id: string
+  name: string
 }
 
 interface StudentRegisterResponse {
@@ -46,20 +42,40 @@ interface StudentRegisterVariables {
   image?: string
 }
 
+const convertToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = (error) => reject(error)
+  })
+}
+
 export default function RegisterStudentPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  
+
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  // Accept weak points as a comma-separated string
-  const [weakPointsInput, setWeakPointsInput] = useState("")
   const [image, setImage] = useState("")
   const [imageURL, setImageURL] = useState("")
+  const [selectedWeakPoints, setSelectedWeakPoints] = useState<Subject[]>([])
   const [error, setError] = useState("")
-  
+
+  const { data: subjectsData, loading: subjectsLoading } = useQuery<{ subjects: Subject[] }>(GET_SUBJECTS_QUERY)
   const [registerStudent, { loading }] = useMutation<StudentRegisterResponse, StudentRegisterVariables>(REGISTER_STUDENT_MUTATION)
+
+  // Helper to validate email
+  const isValidEmail = (email: string): boolean => {
+    const regex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
+    return regex.test(email)
+  }
+
+  // Helper to validate password (length > 8 and at least one uppercase letter)
+  const isValidPassword = (password: string): boolean => {
+    return password.length > 8 && /[A-Z]/.test(password)
+  }
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -81,8 +97,16 @@ export default function RegisterStudentPage() {
       setError("Please fill all required fields")
       return
     }
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address")
+      return
+    }
+    if (!isValidPassword(password)) {
+      setError("Password must be longer than 8 characters and contain at least one uppercase letter")
+      return
+    }
 
-    const weakPoints = weakPointsInput.split(",").map(wp => wp.trim()).filter(wp => wp.length > 0)
+    const weakPoints = selectedWeakPoints.map(s => s.name)
     
     try {
       const { data } = await registerStudent({
@@ -96,15 +120,13 @@ export default function RegisterStudentPage() {
       })
 
       if (data?.registerStudent) {
-        dispatch(
-          setUser({
-            name: data.registerStudent.name,
-            email: data.registerStudent.email,
-            type: "student",
-            token: data.registerStudent.token,
-            image: data.registerStudent.image,
-          })
-        )
+        dispatch(setUser({
+          name: data.registerStudent.name,
+          email: data.registerStudent.email,
+          type: "student",
+          token: data.registerStudent.token,
+          image: data.registerStudent.image,
+        }))
         localStorage.setItem("token", data.registerStudent.token)
         router.push("/StudentLogin")
       }
@@ -113,6 +135,10 @@ export default function RegisterStudentPage() {
       setError(err.message || "Registration failed")
     }
   }
+
+  const subjectOptions = subjectsData?.subjects
+    .filter(subject => !selectedWeakPoints.find(sel => sel.name === subject.name))
+    .map(subject => ({ id: subject.id, name: subject.name })) || []
 
   return (
     <div>
@@ -128,19 +154,10 @@ export default function RegisterStudentPage() {
           </Typography>
         )}
 
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-        >
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} required />
           <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <TextField
-            label="Weak Points (separate by commas)"
-            value={weakPointsInput}
-            onChange={(e) => setWeakPointsInput(e.target.value)}
-          />
           <TextField label="Image URL (optional)" value={image} onChange={(e) => setImage(e.target.value)} />
 
           <Box>
@@ -150,6 +167,21 @@ export default function RegisterStudentPage() {
               <img src={imageURL} alt="Preview" style={{ width: 100, height: 100, objectFit: "cover", marginTop: 8 }} />
             )}
           </Box>
+
+          {subjectsLoading ? (
+            <Box display="flex" justifyContent="center" my={2}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Autocomplete
+              multiple
+              options={subjectOptions}
+              getOptionLabel={(option) => option.name}
+              value={selectedWeakPoints}
+              onChange={(_, newValue) => setSelectedWeakPoints(newValue)}
+              renderInput={(params) => <TextField {...params} label="Select Weak Points" variant="outlined" />}
+            />
+          )}
 
           <Button type="submit" variant="contained" color="primary" disabled={loading}>
             {loading ? "Registering..." : "Register"}
