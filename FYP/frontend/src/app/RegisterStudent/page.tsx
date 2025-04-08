@@ -126,6 +126,7 @@ export default function RegisterStudentPage() {
           type: "student",
           token: data.registerStudent.token,
           image: data.registerStudent.image,
+          id: data.registerStudent.id,
         }))
         localStorage.setItem("token", data.registerStudent.token)
         router.push("/StudentLogin")

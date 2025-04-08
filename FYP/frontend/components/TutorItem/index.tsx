@@ -18,9 +18,11 @@ interface TutorItemProps {
   hourlyRate: number
   image: string
   workingHours: WorkingHour[]
+  subjects: string[]  // Added subjects as an array of strings
 }
 
-export default function TutorItem({ id, name, hourlyRate, image, workingHours }: TutorItemProps) {
+export default function TutorItem({ id, name, hourlyRate, image, workingHours, subjects }: TutorItemProps) {
+  console.log("TutorItem props:", { id, name, hourlyRate, image, workingHours, subjects })
   const dispatch = useDispatch()
 
   // Derive a simple availability string from workingHours
@@ -50,6 +52,8 @@ export default function TutorItem({ id, name, hourlyRate, image, workingHours }:
             height={300}
           />
           <CardContent>
+            {/* Display subjects list separated by commas */}
+            <p>Subjects: {subjects?.join(", ")}</p>
             <p>Hourly Rate: {hourlyRate}$</p>
             <p>Availability: {availability}</p>
             <div className={styles.cardContent}>

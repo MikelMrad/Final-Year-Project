@@ -19,6 +19,7 @@ mutation RegisterTutor($name: String, $email: String, $password: String, $image:
     name
     email
     token
+    image
   }
 }
 `
@@ -100,6 +101,7 @@ export const GET_TUTORS_QUERY = gql`
       email
       hourlyRate
       image
+      subjects
       workingHours {
         day
         startTime

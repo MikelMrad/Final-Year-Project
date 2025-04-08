@@ -4,8 +4,8 @@ import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import styles from "./style.module.css"
-import image1 from "../../static/banner5.png"
-import image2 from "../../static/banner6.jpg"
+import image1 from "../../static/banner1.jpg"
+import image2 from "../../static/banner2.jpg"
 import Image from "next/image"
 
 

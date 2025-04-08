@@ -182,13 +182,14 @@ export default function RegisterTutorPage() {
       if (data?.registerTutor) {
         dispatch(
           setUser({
+            id: data.registerTutor.id,
             name: data.registerTutor.name,
             email: data.registerTutor.email,
             type: "tutor",
             token: data.registerTutor.token,
             image: data.registerTutor.image,
           })
-        )
+        )        
         localStorage.setItem("token", data.registerTutor.token)
         router.push("/TutorLogin")
       }

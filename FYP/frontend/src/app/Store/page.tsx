@@ -1,37 +1,79 @@
 "use client"
 import React from "react"
 import { useQuery } from "@apollo/client"
-import { Grid2 } from '@mui/material'
-import { Container, CircularProgress } from "@mui/material"
+import { Grid, Container, CircularProgress } from "@mui/material"
 import NavBar from "../../../modules/NavBar/index"
 import Footer from "../../../modules/Footer"
 import TutorItem from "../../../components/TutorItem/index"
-import { GET_TUTORS_QUERY } from "@/data/queries"
+import { GET_TUTORS_QUERY, GET_STUDENT_QUERY } from "@/data/queries"
 import styles from "./style.module.css"
+import { useAppSelector } from '@/redux/store'
+
+interface Student {
+  id: string;
+  weakPoints: string[];
+}
+
+interface Tutor {
+  id: string;
+  name: string;
+  hourlyRate: number;
+  image: string;
+  workingHours: { day: string; startTime: string; endTime: string }[];
+  subjects: string[];
+}
 
 export default function TutorsPage() {
-  const { data, loading, error } = useQuery(GET_TUTORS_QUERY)
+  const userId = useAppSelector((state) => state.user.id)
+  const { data, loading, error } = useQuery<{ student: Student }>(GET_STUDENT_QUERY, {
+    variables: { id: userId },
+  })
+  const { data: tutorsData, loading: tutorsLoading, error: tutorsError } = useQuery<{ tutors: Tutor[] }>(GET_TUTORS_QUERY)
+  if (tutorsLoading || loading)
+    return (
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "5rem" }}>
+        <CircularProgress style={{ color: "#2980b9" }} />
+      </div>
+    )
 
-  if (loading) return <CircularProgress />
-  if (error) return <p>Error: {error.message}</p>
+  if (tutorsError || error)
+    return <p>Error: {tutorsError?.message || error?.message}</p>
+
+  const weakPoints = data?.student?.weakPoints || []
+
+  const normalizedWeakPoints = weakPoints.map(point => point.toLowerCase().trim())
+
+  const filteredTutors = tutorsData.tutors.filter((tutor) =>
+    tutor.subjects.some((subject) =>
+      normalizedWeakPoints.includes(subject.toLowerCase().trim())
+    )
+  )
+
+  console.log("Student weak points:", weakPoints)
+  console.log("Filtered tutors:", filteredTutors)
 
   return (
     <div>
       <NavBar />
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }} className={styles.container} >
-        <Grid2 container spacing={4}>
-          {data.tutors.map((tutor: any) => (
-            <Grid2 key={tutor.id} xs={12} sm={6} md={3}>
-              <TutorItem
-                id={tutor.id}
-                name={tutor.name}
-                hourlyRate={tutor.hourlyRate}
-                image={tutor.image}
-                workingHours={tutor.workingHours}
-              />
-            </Grid2>
-          ))}
-        </Grid2>
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }} className={styles.container}>
+        {filteredTutors.length > 0 ? (
+          <Grid container spacing={4}>
+            {filteredTutors.map((tutor) => (
+              <Grid key={tutor.id} item xs={12} sm={6} md={4}>
+                <TutorItem
+                  id={tutor.id}
+                  name={tutor.name}
+                  hourlyRate={tutor.hourlyRate}
+                  image={tutor.image}
+                  workingHours={tutor.workingHours}
+                  subjects={tutor.subjects}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <p style={{ textAlign: "center" }}>No tutors found for your weak points.</p>
+        )}
       </Container>
       <Footer />
     </div>

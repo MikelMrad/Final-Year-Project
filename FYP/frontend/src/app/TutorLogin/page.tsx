@@ -69,11 +69,11 @@ export default function TutorLoginPage() {
         throw new Error("No data returned from login")
       }
 
-      const { token, name, email, image } = data.loginTutor
+      const { id, token, name, email, image } = data.loginTutor
 
       localStorage.setItem("token", token)
       dispatch(logIn({ token, username: name, email }))
-      dispatch(setUser({ name, email, type: "tutor", token, image }))
+      dispatch(setUser({ id, name, email, type: "tutor", token, image }))
       router.push("/Landing")
     } catch (err) {
       let errorMessage = "Login failed!"
