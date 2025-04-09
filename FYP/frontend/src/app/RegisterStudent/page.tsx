@@ -66,13 +66,11 @@ export default function RegisterStudentPage() {
   const { data: subjectsData, loading: subjectsLoading } = useQuery<{ subjects: Subject[] }>(GET_SUBJECTS_QUERY)
   const [registerStudent, { loading }] = useMutation<StudentRegisterResponse, StudentRegisterVariables>(REGISTER_STUDENT_MUTATION)
 
-  // Helper to validate email
   const isValidEmail = (email: string): boolean => {
     const regex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
     return regex.test(email)
   }
 
-  // Helper to validate password (length > 8 and at least one uppercase letter)
   const isValidPassword = (password: string): boolean => {
     return password.length > 8 && /[A-Z]/.test(password)
   }

@@ -335,3 +335,22 @@ export const GET_SUBJECTS_QUERY = gql`
     }
   }
 `
+
+export const GET_TUTOR_APPOINTMENTS_QUERY = gql`
+  query TutorAppointments($tutorId: ID!) {
+    tutorAppointments(tutorId: $tutorId) {
+      id
+      date
+    }
+  }
+`
+
+export const ADD_APPOINTMENT_MUTATION = gql`
+  mutation AddAppointment($student: ID!, $tutor: ID!, $date: String!) {
+    addAppointment(student: $student, tutor: $tutor, date: $date) {
+      id
+      date
+      confirmed
+    }
+  }
+`

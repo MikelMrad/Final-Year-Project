@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(to right, #fff, #ffb001);
+  background: linear-gradient(to right, #fff, #2980b9);
 }
 
 .loginSection {
@@ -71,22 +71,22 @@
 }
 
 .signInButton {
-  background: #ffb001;
+  background: #2980b9;
   color: #fff;
 }
 
 .signInButton:hover {
-  background: #e09c00;
+  background: #2980b9;
 }
 
 .signUpButton {
   background: #fff;
-  color: #ffb001;
+  color: #2980b9;
   margin: 1px;
 }
 
 .signUpButton:hover {
-  background: #ffb001;
+  background: #2980b9;
   margin: 0px;
   border: solid 1px #fff;
   color: #fff;
@@ -94,7 +94,7 @@
 
 .welcomeSection {
   flex: 1;
-  background: linear-gradient(to right, #ffc343, #ffb001);
+  background: linear-gradient(to right, #3f8bbe, #2980b9);
   color: #fff;
   display: flex;
   flex-direction: column;

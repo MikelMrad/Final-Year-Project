@@ -22,7 +22,7 @@ const Page = () => {
   const router = useRouter()
 
   const handleButtonClick = (type: "tutor" | "student") => {
-    dispatch(setUser({ name: "", email: "", type, token: "" }))
+    dispatch(setUser({ name: "", email: "", type, token: "",image: "", id: "" }))
     type === "student" ? router.push('/StudentLogin') : router.push('/TutorLogin')
   }
 

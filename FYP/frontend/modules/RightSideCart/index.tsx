@@ -6,8 +6,6 @@ import Image from 'next/image'
 
 function index() {
   
-  const cartItems = useAppSelector((state) => state.cart.items)
-  
   const totalPrice = () => {
   let total = 0
   cartItems.forEach(item => {

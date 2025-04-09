@@ -8,23 +8,22 @@ const StudentSchema = new mongoose.Schema({
     required: true,
     unique: true,
     lowercase: true,
-    trim: true,
+    trim: true
   },
   password: { type: String, required: true },
-  enrolledCourses: [{ type: String }],
+  appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }],
   weakPoints: [{ type: String }],
-  image: { type: String, default: "default-avatar.png" },
+  image: { type: String, default: "default-avatar.png" }
 }, { timestamps: true })
 
-StudentSchema.pre("save", async function (next) {
+StudentSchema.pre("save", async function(next) {
   if (!this.isModified("password")) return next()
   this.password = await bcrypt.hash(this.password, 10)
   next()
 })
 
-StudentSchema.methods.matchPassword = async function (enteredPassword) {
+StudentSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password)
 }
 
 module.exports = mongoose.model("Student", StudentSchema)
-

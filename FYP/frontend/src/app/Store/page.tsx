@@ -29,6 +29,7 @@ export default function TutorsPage() {
     variables: { id: userId },
   })
   const { data: tutorsData, loading: tutorsLoading, error: tutorsError } = useQuery<{ tutors: Tutor[] }>(GET_TUTORS_QUERY)
+
   if (tutorsLoading || loading)
     return (
       <div style={{ display: "flex", justifyContent: "center", marginTop: "5rem" }}>
@@ -40,7 +41,6 @@ export default function TutorsPage() {
     return <p>Error: {tutorsError?.message || error?.message}</p>
 
   const weakPoints = data?.student?.weakPoints || []
-
   const normalizedWeakPoints = weakPoints.map(point => point.toLowerCase().trim())
 
   const filteredTutors = tutorsData?.tutors?.filter((tutor) =>
@@ -59,7 +59,14 @@ export default function TutorsPage() {
         {(filteredTutors?.length ?? 0) > 0 ? (
           <Grid container spacing={4}>
             {filteredTutors?.map((tutor) => (
-              <Grid key={tutor.id} item xs={12} sm={6} md={4}>
+              <Grid 
+                key={tutor.id} 
+                item 
+                xs={12}
+                sm={6} 
+                md={4} 
+                lg={3}  
+              >
                 <TutorItem
                   id={tutor.id}
                   name={tutor.name}
@@ -72,7 +79,14 @@ export default function TutorsPage() {
             ))}
           </Grid>
         ) : (
-          <p style={{ textAlign: "center" }}>No tutors found for your weak points.</p>
+          <div style={{ height: "80vh" }}>
+            <h2 style={{ textAlign: "center", marginTop: "2rem" }}>
+              No tutors found for your weak points.
+            </h2>
+            <p style={{ textAlign: "center" }}>
+              Please check back later or contact support for assistance.
+            </p>
+          </div>
         )}
       </Container>
       <Footer />

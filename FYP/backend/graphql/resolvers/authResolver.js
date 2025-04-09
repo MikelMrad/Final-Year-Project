@@ -12,21 +12,6 @@ const {
   GraphQLInputObjectType,
 } = require("graphql")
 
-async function uploadImageToImageKit(base64Image, folder = "users") {
-  try {
-    const uploadResponse = await imagekit.upload({
-      file: base64Image,
-      fileName: `${folder}_${uuidv4()}`,
-      folder: `/${folder}`,
-    });
-
-    return uploadResponse.url;
-  } catch (error) {
-    console.error("Image upload error:", error.message);
-    return "default-avatar.png";
-  }
-}
-
 const authMutations = {
   registerTutor: {
     type: TutorType,
@@ -62,7 +47,7 @@ const authMutations = {
         name,
         email: normalizedEmail,
         password,
-        image: image || "default-avatar.png",
+        image: image,
         hourlyRate,
         subjects,
         workingHours,
@@ -124,7 +109,7 @@ const authMutations = {
         password,
         enrolledCourses: [],
         weakPoints,
-        image: image || "default-avatar.png",
+        image: image,
       })
 
       await student.save()

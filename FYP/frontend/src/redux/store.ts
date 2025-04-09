@@ -2,8 +2,6 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { TypedUseSelectorHook, useSelector } from "react-redux"
 import loginReducer from "./features/loginSlice"
-import cartReducer from './features/cartSlice'
-import categoryReducer from './features/categorySlice'
 import productReducer from './features/productSlice'
 import userReducer from './features/userSlice'
 import logger from 'redux-logger'
@@ -15,13 +13,11 @@ import { use } from "react"
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['login', 'cart', 'category', 'product' , 'user'],
+  whitelist: ['login', 'product' , 'user'],
 }
 
 const rootReducer = combineReducers({
   login: loginReducer,
-  cart: cartReducer,
-  category: categoryReducer,
   product: productReducer,
   user: userReducer,
 })

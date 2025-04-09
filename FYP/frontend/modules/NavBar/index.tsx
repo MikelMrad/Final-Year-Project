@@ -17,17 +17,12 @@ export default function Home() {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
   
-  const cartItems = useAppSelector((state) => state.cart.items)
   const user = useAppSelector((state) => state.user)
   const isLoggedIn = useAppSelector((state) => state.login.isLoggedIn)
   const [navOpen, setNavOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  let cartCount = 0
-  cartItems.forEach(item => {
-    cartCount += item.quantity
-  })
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -63,32 +58,12 @@ export default function Home() {
 
       <div className={`${styles.navLinks} ${navOpen ? styles.open : ''}`}>
         <Link href="/Landing">Home</Link>
-        <Link href="/Store">Learn Now</Link>
+        {user.type === "student" && <Link href="/Store">Learn Now</Link>}
         <Link href="/AboutUs">About Us</Link>
         <Link href="/ContactUs">Contact Us</Link>
       </div>
 
       <div className={styles.login} ref={dropdownRef}>
-        <div style={{ position: 'relative' }}>
-          <Link href="/Cart">
-            <Image src={Cart} height={50} width={50} alt="Cart" />
-            {cartCount > 0 && (
-              <span style={{
-                position: 'absolute',
-                top: '0',
-                right: '0',
-                backgroundColor: 'black',
-                color: 'white',
-                borderRadius: '50%',
-                padding: '5px 10px',
-                fontSize: '12px',
-              }}>
-                {cartCount}
-              </span>
-            )}
-          </Link>
-        </div>
-
         <div onClick={() => setDropdownOpen(prev => !prev)} style={{ cursor: 'pointer' }}>
           <Image
             src={ user.image ? user.image : User }

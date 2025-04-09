@@ -1,4 +1,6 @@
 const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList } = require("graphql")
+const AppointmentType = require("./AppointmentType")
+const Appointment = require("../../models/Appointment")
 
 const StudentType = new GraphQLObjectType({
   name: "Student",
@@ -10,6 +12,12 @@ const StudentType = new GraphQLObjectType({
     weakPoints: { type: new GraphQLList(GraphQLString) },
     image: { type: GraphQLString },
     token: { type: GraphQLString },
+    appointments: {
+      type: new GraphQLList(AppointmentType),
+      resolve(parent) {
+        return Appointment.find({ student: parent._id }).populate("tutor")
+      }
+    }
   })
 })
 

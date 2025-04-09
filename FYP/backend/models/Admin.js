@@ -11,7 +11,7 @@ const AdminSchema = new mongoose.Schema({
     trim: true,
   },
   password: { type: String, required: true },
-  image: { type: String, default: "default-avatar.png" },
+  image: { type: String },
 }, { timestamps: true })
 
 AdminSchema.pre("save", async function (next) {

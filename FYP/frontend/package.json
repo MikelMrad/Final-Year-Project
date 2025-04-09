@@ -13,6 +13,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.10",
+    "@mui/x-date-pickers": "^7.28.3",
     "@reduxjs/toolkit": "^2.2.7",
     "@splidejs/splide": "^4.1.4",
     "@types/redux-logger": "^3.0.13",
