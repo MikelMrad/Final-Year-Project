@@ -1,5 +1,4 @@
 "use client"
-
 import React, { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
@@ -13,7 +12,8 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
-  Grid2
+  Grid,
+  Box
 } from "@mui/material"
 import { useQuery, useMutation } from "@apollo/client"
 import {
@@ -55,7 +55,7 @@ interface AppointmentsData {
   tutorAppointments: Appointment[]
 }
 
-interface Slot {
+export interface Slot {
   day: string
   startTime: string
   endTime: string
@@ -85,21 +85,17 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
     GET_TUTOR_APPOINTMENTS_QUERY,
     { variables: { tutorId } }
   )
-console.log("Appointments Data:", appointmentsData)
-  const [addAppointment] = useMutation(ADD_APPOINTMENT_MUTATION)
+
+  const [addAppointment] = useMutation(ADD_APPOINTMENT_MUTATION, {
+    refetchQueries: [{ query: GET_TUTOR_APPOINTMENTS_QUERY, variables: { tutorId } }]
+  })
 
   useEffect(() => {
-    if (!tutorLoading && !appointmentsLoading && tutorData) {
-      const workingSlots = computeWorkingSlots(tutorData.tutor.workingHours)
-      const takenSlots = appointmentsData?.tutorAppointments.map((a) => new Date(a.date).getTime()) || []
-
-      const freeSlots = workingSlots.filter(
-        (slot) => !takenSlots.includes(new Date(slot.fullDate).getTime())
-      )
-
-      setAvailableSessions(freeSlots)
+    if (!tutorLoading && tutorData) {
+      const slots = computeWorkingSlots(tutorData.tutor.workingHours)
+      setAvailableSessions(slots)
     }
-  }, [tutorLoading, appointmentsLoading, tutorData, appointmentsData])
+  }, [tutorLoading, tutorData])
 
   const handleApplyForSession = async () => {
     if (selectedSession) {
@@ -130,17 +126,32 @@ console.log("Appointments Data:", appointmentsData)
     <div>
       <NavBar />
       <Container sx={{ mt: 4, mb: 4 }}>
-        <Grid2 container spacing={2}>
-          <Grid2 item xs={12} md={4}>
-            <img src={tutorData.tutor.image} alt={tutorData.tutor.name} style={{ width: "100%" }} />
-          </Grid2>
-          <Grid2 item xs={12} md={8}>
-            <Typography variant="h4">{tutorData.tutor.name}</Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={4}>
+            <Box
+              component="img"
+              src={tutorData.tutor.image}
+              alt={tutorData.tutor.name}
+              sx={{
+                width: "100%",
+                height: 300,
+                objectFit: "cover",
+                borderRadius: 2,
+                boxShadow: 2,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <Typography variant="h4" gutterBottom>
+              {tutorData.tutor.name}
+            </Typography>
             <Typography variant="body1">
               Subjects: {tutorData.tutor.subjects.join(", ")}
             </Typography>
-            <Typography variant="body1">Hourly Rate: ${tutorData.tutor.hourlyRate}</Typography>
-            <FormControl fullWidth sx={{ mt: 2 }}>
+            <Typography variant="body1" sx={{ mb: 2 }}>
+              Hourly Rate: ${tutorData.tutor.hourlyRate}
+            </Typography>
+            <FormControl fullWidth>
               <InputLabel id="session-label">Available Sessions</InputLabel>
               <Select
                 labelId="session-label"
@@ -148,35 +159,25 @@ console.log("Appointments Data:", appointmentsData)
                 label="Available Sessions"
                 onChange={(e) => setSelectedSession(JSON.parse(e.target.value))}
               >
-                {computeWorkingSlots(tutorData.tutor.workingHours).map((session) => {
-                  const isTaken = appointmentsData?.tutorAppointments.some(
-                    (a) => new Date(a.date).getTime() === new Date(session.fullDate).getTime()
-                  )
-                  return (
-                    <MenuItem
-                      key={session.fullDate}
-                      value={JSON.stringify(session)}
-                      disabled={isTaken}
-                    >
-                      {session.day} - {session.startTime} to {session.endTime}
-                      {isTaken && " (Taken)"}
-                    </MenuItem>
-                  )
-                })}
+                {availableSessions.map((session) => (
+                  <MenuItem key={session.fullDate} value={JSON.stringify(session)}>
+                    {session.day} - {session.startTime} to {session.endTime}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <Button
               variant="contained"
-              sx={{ mt: 2 }}
+              fullWidth
+              sx={{ mt: 2, py: 1.5 }}
               onClick={handleApplyForSession}
               disabled={!selectedSession || loading}
             >
               {loading ? <CircularProgress size={24} color="inherit" /> : "Apply for session"}
             </Button>
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Container>
-
       <Snackbar
         open={success}
         autoHideDuration={1500}
@@ -186,7 +187,6 @@ console.log("Appointments Data:", appointmentsData)
           Appointment successfully booked!
         </Alert>
       </Snackbar>
-
       <Footer />
     </div>
   )
@@ -211,12 +211,28 @@ function getNextDateForDay(dayName: string, time: string): string {
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
   const today = new Date()
   const targetDay = dayNames.indexOf(dayName)
-  if (targetDay === -1) return today.toISOString()
+  if (targetDay === -1) return formatLocalISO(today)
   const dayDiff = (targetDay + 7 - today.getDay()) % 7 || 7
   const targetDate = new Date(today)
   targetDate.setDate(today.getDate() + dayDiff)
   const [hours, minutes] = time.split(":")
   targetDate.setHours(parseInt(hours), parseInt(minutes), 0, 0)
+  return formatLocalISO(targetDate)
+}
 
-  return targetDate.toISOString() // UTC time
+function formatLocalISO(date: Date): string {
+  const pad = (num: number) => num.toString().padStart(2, "0")
+  const year = date.getFullYear()
+  const month = pad(date.getMonth() + 1)
+  const day = pad(date.getDate())
+  const hours = pad(date.getHours())
+  const minutes = pad(date.getMinutes())
+  const seconds = pad(date.getSeconds())
+  const ms = date.getMilliseconds().toString().padStart(3, "0")
+  const offsetMinutes = -date.getTimezoneOffset()
+  const sign = offsetMinutes >= 0 ? "+" : "-"
+  const absOffset = Math.abs(offsetMinutes)
+  const offsetHours = pad(Math.floor(absOffset / 60))
+  const offsetMins = pad(absOffset % 60)
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${ms}${sign}${offsetHours}:${offsetMins}`
 }

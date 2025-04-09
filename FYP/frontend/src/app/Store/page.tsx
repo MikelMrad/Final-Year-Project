@@ -10,17 +10,17 @@ import styles from "./style.module.css"
 import { useAppSelector } from '@/redux/store'
 
 interface Student {
-  id: string;
-  weakPoints: string[];
+  id: string
+  weakPoints: string[]
 }
 
 interface Tutor {
-  id: string;
-  name: string;
-  hourlyRate: number;
-  image: string;
-  workingHours: { day: string; startTime: string; endTime: string }[];
-  subjects: string[];
+  id: string
+  name: string
+  hourlyRate: number
+  image: string
+  workingHours: { day: string; startTime: string; endTime: string }[]
+  subjects: string[]
 }
 
 export default function TutorsPage() {
@@ -48,9 +48,6 @@ export default function TutorsPage() {
       normalizedWeakPoints.includes(subject.toLowerCase().trim())
     )
   )
-
-  console.log("Student weak points:", weakPoints)
-  console.log("Filtered tutors:", filteredTutors)
 
   return (
     <div>
