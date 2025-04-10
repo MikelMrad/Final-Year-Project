@@ -44,25 +44,38 @@ const CalendarPage = () => {
   useEffect(() => {
     if (data) {
       const appointments =
-        user.type === "tutor"
-          ? data?.tutorAppointments
-          : data?.studentAppointments
+      user.type === "tutor"
+        ? data?.tutorAppointments
+        : data?.studentAppointments
 
-      const confirmedEvents = appointments
-        ?.filter((appt) => appt.confirmed)
-        .map((appt) => {
-          const startDate = new Date(parseInt(appt.date))
-          const endDate = new Date(startDate.getTime() + 60 * 60 * 1000)
-          return {
-            id: appt.id,
-            title: appt.tutor?.name,
-            start: startDate,
-            end: endDate,
+    const confirmedEvents = appointments
+      ?.filter((appt) => appt.confirmed)
+      .map((appt) => {
+        const startDate = new Date(parseInt(appt.date)) // Convert to Date object
+        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000) // 1 hour later
+
+        // Format time to display (e.g., "9:00 AM - 10:00 AM")
+        const startTime = moment(startDate).format("h:mm A")
+        const endTime = moment(endDate).format("h:mm A")
+
+        return {
+          id: appt.id,
+          title: (
+            <>
+              {user.type === "tutor"
+                ? `With ${appt.student?.name}`
+                : `With ${appt.tutor?.name}`}
+              <br />
+              at {startTime} - {endTime}
+            </>
+          ),
+          start: startDate,
+          end: endDate,
+        }
+      })
+            setEvents(confirmedEvents || [])
           }
-        })
-      setEvents(confirmedEvents || [])
-    }
-  }, [data, isTutor])
+        }, [data, isTutor])
 
   const handleNavigate = (date: Date) => {
     setCurrentDate(date)
@@ -91,10 +104,10 @@ const CalendarPage = () => {
               events={events}
               startAccessor="start"
               endAccessor="end"
-              views={{ week: true }}
+              views={{ month: true }}
               step={60}
               timeslots={1}
-              defaultView={Views.WEEK}
+              defaultView={Views.MONTH}
               style={{ height: "100%", padding: "1rem" }}
               eventPropGetter={(event) => ({
                 className: styles.eventCell,

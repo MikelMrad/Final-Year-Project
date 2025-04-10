@@ -1,20 +1,5 @@
-/* CalendarPage.module.css */
+
 .eventCell {
-  max-height: 80px; /* Adjust based on the size of the events */
-  overflow-y: auto; /* Enable vertical scrolling if content exceeds max-height */
-  padding: 5px;
-}
+  font-size:12px;
 
-/* Optional: Style the scroll bar */
-.eventCell::-webkit-scrollbar {
-  width: 5px;
-}
-
-.eventCell::-webkit-scrollbar-thumb {
-  background-color: darkgray;
-  border-radius: 5px;
-}
-
-.eventCell::-webkit-scrollbar-track {
-  background: #f1f1f1;
 }
