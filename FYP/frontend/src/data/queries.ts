@@ -354,3 +354,36 @@ export const ADD_APPOINTMENT_MUTATION = gql`
     }
   }
 `
+
+export const TUTOR_APPOINTMENTS_QUERY = gql`
+  query TutorAppointments($tutorId: ID!) {
+    tutorAppointments(tutorId: $tutorId) {
+      id
+      date
+      confirmed
+      student {
+        name
+      }
+      tutor {
+        name
+      }
+    }
+  }
+`
+
+export const STUDENT_APPOINTMENTS_QUERY = gql`
+  query StudentAppointments($studentId: ID!) {
+    studentAppointments(studentId: $studentId) {
+      id
+      date
+      confirmed
+      student {
+        name
+      }
+      tutor {
+        name
+      }
+    }
+  }
+`
+

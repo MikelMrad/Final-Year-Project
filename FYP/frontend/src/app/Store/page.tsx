@@ -8,6 +8,7 @@ import TutorItem from "../../../components/TutorItem/index"
 import { GET_TUTORS_QUERY, GET_STUDENT_QUERY } from "@/data/queries"
 import styles from "./style.module.css"
 import { useAppSelector } from '@/redux/store'
+import LoadingScreen from "../../../components/LoadingScreen/page"
 
 interface Student {
   id: string
@@ -32,8 +33,8 @@ export default function TutorsPage() {
 
   if (tutorsLoading || loading)
     return (
-      <div style={{ display: "flex", justifyContent: "center", marginTop: "5rem" }}>
-        <CircularProgress style={{ color: "#2980b9" }} />
+      <div>
+        <LoadingScreen/>
       </div>
     )
 

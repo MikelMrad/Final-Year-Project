@@ -24,6 +24,8 @@ import {
 import NavBar from "../../../../modules/NavBar"
 import Footer from "../../../../modules/Footer"
 import { useAppSelector } from "@/redux/store"
+import styles from "../style.module.css"
+import LoadingScreen from "../../../../components/LoadingScreen/page"
 
 interface WorkingHour {
   day: string
@@ -87,15 +89,24 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
   )
 
   const [addAppointment] = useMutation(ADD_APPOINTMENT_MUTATION, {
-    refetchQueries: [{ query: GET_TUTOR_APPOINTMENTS_QUERY, variables: { tutorId } }]
+    refetchQueries: [{ query: GET_TUTOR_APPOINTMENTS_QUERY, variables: { tutorId } }],
   })
 
   useEffect(() => {
-    if (!tutorLoading && tutorData) {
+    if (!tutorLoading && tutorData && !appointmentsLoading && appointmentsData) {
       const slots = computeWorkingSlots(tutorData.tutor.workingHours)
-      setAvailableSessions(slots)
+      const filteredSlots = slots.filter((slot) => {
+        const slotTime = new Date(slot.fullDate).getTime()
+        return !appointmentsData.tutorAppointments.some((app) => {
+          const appointmentTime = isNaN(Number(app.date))
+            ? new Date(app.date).getTime()
+            : Number(app.date)
+          return appointmentTime === slotTime
+        })
+      })
+      setAvailableSessions(filteredSlots)
     }
-  }, [tutorLoading, tutorData])
+  }, [tutorLoading, tutorData, appointmentsLoading, appointmentsData])
 
   const handleApplyForSession = async () => {
     if (selectedSession) {
@@ -120,38 +131,38 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
     }
   }
 
-  if (tutorLoading || appointmentsLoading) return <div>Loading...</div>
+  if (tutorLoading || appointmentsLoading) return <div><LoadingScreen/></div>
 
   return (
     <div>
       <NavBar />
-      <Container sx={{ mt: 4, mb: 4 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
+      <Container className={styles.container}>
+        <Grid container spacing={4} alignItems="center">
+          <Grid item xs={12} md={5}>
             <Box
               component="img"
-              src={tutorData.tutor.image}
-              alt={tutorData.tutor.name}
-              sx={{
-                width: "100%",
-                height: 300,
-                objectFit: "cover",
-                borderRadius: 2,
-                boxShadow: 2,
-              }}
+              src={tutorData?.tutor.image}
+              alt={tutorData?.tutor.name}
+              className={styles.tutorImage}
             />
           </Grid>
-          <Grid item xs={12} md={8}>
-            <Typography variant="h4" gutterBottom>
-              {tutorData.tutor.name}
+          <Grid item xs={12} md={7}>
+            <Typography variant="h3" className={styles.tutorName} gutterBottom>
+              {tutorData?.tutor.name}
             </Typography>
-            <Typography variant="body1">
-              Subjects: {tutorData.tutor.subjects.join(", ")}
+            <Typography variant="body1" className={styles.tutorText}>
+              Subjects: {tutorData?.tutor.subjects.join(", ")}
             </Typography>
-            <Typography variant="body1" sx={{ mb: 2 }}>
-              Hourly Rate: ${tutorData.tutor.hourlyRate}
+            <Typography variant="body1" className={styles.tutorText}>
+              Hourly Rate: ${tutorData?.tutor.hourlyRate}
             </Typography>
-            <FormControl fullWidth>
+            <Typography variant="body1" className={styles.tutorText} gutterBottom>
+              Working Hours:
+              {tutorData?.tutor.workingHours.map((wh) => (
+                <span key={`${wh.day}-${wh.startTime}`}> {wh.day} {wh.startTime}-{wh.endTime} |</span>
+              ))}
+            </Typography>
+            <FormControl fullWidth className={styles.formControl}>
               <InputLabel id="session-label">Available Sessions</InputLabel>
               <Select
                 labelId="session-label"
@@ -169,11 +180,12 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
             <Button
               variant="contained"
               fullWidth
-              sx={{ mt: 2, py: 1.5 }}
               onClick={handleApplyForSession}
+              className={styles.applyButton}
               disabled={!selectedSession || loading}
+              style={{ marginTop: "16px" , padding: "16px 0" }}
             >
-              {loading ? <CircularProgress size={24} color="inherit" /> : "Apply for session"}
+              {loading ? <CircularProgress size={24} color="inherit" /> : "Apply for Session"}
             </Button>
           </Grid>
         </Grid>
@@ -183,7 +195,7 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
         autoHideDuration={1500}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="success" sx={{ width: "100%" }}>
+        <Alert severity="success" className={styles.successAlert}>
           Appointment successfully booked!
         </Alert>
       </Snackbar>

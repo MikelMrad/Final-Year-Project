@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+.container {
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+.tutorImage {
+  width: 100%;
+  max-height: 600px; /* A large image */
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tutorName,
+.tutorText {
+  font-family: "Bebas Neue", cursive, sans-serif;
+  /* Adjust sizing as preferred */
+  letter-spacing: 1px;
+}
+
+.tutorName {
+  font-size: 3rem;
+}
+
+.tutorText {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+.formControl {
+  margin: 16px 0;
+}
+
+.applyButton {
+  margin-top: 12px;
+  background-color: #1976d2;
+  color: #fff;
+  font-family: "Bebas Neue", cursive, sans-serif;
+  font-size: 1.6rem;
+  transition: background 0.3s ease;
+}
+
+.applyButton:hover {
+  background-color: #1565c0;
+}
+
+.successAlert {
+  width: 100%;
+}
