@@ -2,7 +2,6 @@ const Student = require("../../models/Student")
 const StudentType = require("../types/StudentType")
 const { protect } = require("../../middleware/authMiddleware")
 const { adminProtect } = require("../../middleware/adminAuthMiddleware")
-const { studentProtect } = require("../../middleware/studentAuthMiddleware")
 const generateToken = require("../../config/generateTokens")
 const { GraphQLList, GraphQLID, GraphQLString } = require("graphql")
 
@@ -23,7 +22,7 @@ const StudentQueries = {
     // }  
     type: new GraphQLList(StudentType),
     async resolve(_, args, context) {
-      await studentProtect(context)
+      await protect(context)
       return await Student.find().populate({
         path: "appointments",
         populate: { path: "tutor" }
@@ -46,7 +45,7 @@ const StudentQueries = {
     type: StudentType,
     args: { id: { type: GraphQLID } },
     async resolve(_, args, context) {
-      await studentProtect(context)
+      await protect(context)
       const student = await Student.findById(args.id).populate({
         path: "appointments",
         populate: { path: "tutor" }
