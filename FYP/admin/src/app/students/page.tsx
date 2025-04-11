@@ -1,35 +1,27 @@
-"use client"
-import { useQuery, useMutation } from "@apollo/client"
-import { DELETE_STUDENT, GET_ALL_STUDENTS } from "../data/queries"
-import styles from "./style.module.css"
+'use client'
+import styles from './style.module.css'
+import { useQuery } from '@apollo/client'
+import { GET_ALL_STUDENTS } from '../data/queries'
+import { useRouter } from 'next/navigation'
 
-export default function StudentsPage() {
-  const { data, loading, error, refetch } = useQuery(GET_ALL_STUDENTS)
-  const [deleteStudent] = useMutation(DELETE_STUDENT)
-
-  const handleDelete = async (id: string) => {
-    await deleteStudent({ variables: { id } })
-    refetch()
-  }
+export default function TutorsPage() {
+  const { data, loading } = useQuery(GET_ALL_STUDENTS)
+  const router = useRouter()
 
   if (loading) return <p>Loading...</p>
-  if (error) return <p>Error loading students</p>
 
   return (
     <div className={styles.container}>
-      <h2>Students</h2>
-      <ul>
-        {data.getAllStudents.map((student: any) => (
-          <li key={student._id}>
-            <div>
-              <strong>{student.name}</strong> ({student.email})
-              <br />
-              Weak Points: {student.weakPoints.join(", ")}
-            </div>
-            <button onClick={() => handleDelete(student._id)}>Delete</button>
-          </li>
+      <h2>All Tutors</h2>
+      <div className={styles.grid}>
+        {data?.tutors.map((tutor: any) => (
+          <div key={tutor.id} className={styles.card}>
+            <h3>{tutor.name}</h3>
+            <p>{tutor.email}</p>
+            <button onClick={() => router.push(`/students/${student.id}`)}>Edit</button>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }

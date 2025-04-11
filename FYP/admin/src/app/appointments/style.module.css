@@ -2,19 +2,19 @@
     padding: 2rem;
   }
   
-  ul {
+  .ul {
     list-style: none;
     padding: 0;
   }
   
-  li {
+  .li {
     margin-bottom: 1rem;
     padding: 1rem;
     border: 1px solid #ccc;
     border-radius: 8px;
   }
   
-  button {
+  .button {
     background-color: #e74c3c;
     color: white;
     border: none;
@@ -24,7 +24,7 @@
     border-radius: 4px;
   }
   
-  button:hover {
+  .button:hover {
     background-color: #c0392b;
   }
   

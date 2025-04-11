@@ -204,20 +204,47 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
   )
 }
 
+function formatTime(date: Date): string {
+  return date.toTimeString().slice(0, 5)
+}
+
+
 function computeWorkingSlots(workingHours: WorkingHour[]): Slot[] {
   const slots: Slot[] = []
+
   workingHours.forEach(({ day, startTime, endTime }) => {
-    const startHour = parseInt(startTime.split(":")[0])
-    const endHour = parseInt(endTime.split(":")[0])
-    for (let hour = startHour; hour < endHour; hour++) {
-      const formattedStart = hour.toString().padStart(2, "0") + ":00"
-      const formattedEnd = (hour + 1).toString().padStart(2, "0") + ":00"
+    const [startHour, startMinute] = startTime.split(":").map(Number)
+    const [endHour, endMinute] = endTime.split(":").map(Number)
+
+    let current = new Date()
+    current.setHours(startHour, startMinute, 0, 0)
+
+    const end = new Date()
+    end.setHours(endHour, endMinute, 0, 0)
+
+    while (current.getTime() + 60 * 60 * 1000 <= end.getTime()) {
+      const start = new Date(current)
+      const endSession = new Date(current.getTime() + 60 * 60 * 1000)
+
+      const formattedStart = formatTime(start)
+      const formattedEnd = formatTime(endSession)
+
       const fullDate = getNextDateForDay(day, formattedStart)
-      slots.push({ day, startTime: formattedStart, endTime: formattedEnd, fullDate })
+
+      slots.push({
+        day,
+        startTime: formattedStart,
+        endTime: formattedEnd,
+        fullDate,
+      })
+
+      current = endSession
     }
   })
+
   return slots
 }
+
 
 function getNextDateForDay(dayName: string, time: string): string {
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]

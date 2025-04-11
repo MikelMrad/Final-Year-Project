@@ -1,0 +1,24 @@
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 2rem;
+  }
+  input {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.6rem;
+    border-radius: 6px;
+  }
+  button {
+    margin-right: 1rem;
+    background-color: #2563eb;
+    color: white;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 6px;
+  }
+  .delete {
+    background-color: #dc2626;
+  }
+  
