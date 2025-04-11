@@ -1,4 +1,6 @@
 const Appointment = require("../../models/Appointment")
+const Tutor = require("../../models/Tutor")
+const Student = require("../../models/Student")
 const AppointmentType = require("../types/AppointmentType")
 const { adminProtect } = require("../../middleware/adminAuthMiddleware")
 const { GraphQLList, GraphQLID, GraphQLString } = require("graphql")
@@ -45,6 +47,7 @@ const AppointmentMutations = {
       const { student, tutor, date } = args
       const appointmentDate = new Date(date)
   
+      // Check if the tutor already has an appointment at this time.
       const tutorConflict = await Appointment.findOne({
         tutor,
         date: appointmentDate,
@@ -53,6 +56,7 @@ const AppointmentMutations = {
         throw new Error("This tutor already has an appointment at the selected time.")
       }
   
+      // Check if the student already has an appointment at this time.
       const studentConflict = await Appointment.findOne({
         student,
         date: appointmentDate,
@@ -61,6 +65,7 @@ const AppointmentMutations = {
         throw new Error("This student already has an appointment at the selected time.")
       }
   
+      // Create a new appointment document.
       const appointment = new Appointment({
         student,
         tutor,
@@ -68,7 +73,15 @@ const AppointmentMutations = {
         confirmed: false,
       })
   
+      // Save the appointment.
       const savedAppointment = await appointment.save()
+      
+      // Update the Tutor: push appointment id into the appointments array.
+      await Tutor.findByIdAndUpdate(tutor, { $push: { appointments: savedAppointment._id } })
+      
+      // Update the Student: push appointment id into the appointments array.
+      await Student.findByIdAndUpdate(student, { $push: { appointments: savedAppointment._id } })
+      
       return savedAppointment
     }
   },

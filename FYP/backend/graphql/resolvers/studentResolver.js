@@ -1,5 +1,6 @@
 const Student = require("../../models/Student")
 const StudentType = require("../types/StudentType")
+const { protect } = require("../../middleware/authMiddleware")
 const { adminProtect } = require("../../middleware/adminAuthMiddleware")
 const { studentProtect } = require("../../middleware/studentAuthMiddleware")
 const generateToken = require("../../config/generateTokens")
@@ -12,23 +13,33 @@ const StudentQueries = {
     //     id
     //     name
     //     email
-    //     enrolledCourses
+    //     appointments {
+    //       id
+    //       date
+    //       tutor { name }
+    //     }
     //     weakPoints
     //   }
     // }  
     type: new GraphQLList(StudentType),
     async resolve(_, args, context) {
       await studentProtect(context)
-      return await Student.find()
+      return await Student.find().populate({
+        path: "appointments",
+        populate: { path: "tutor" }
+      })
     }
   },
   student: {
     // query {
-    //   student(id: "60f5a4f2b5e3b90017d25b8a") {
+    //   student(id: "STUDENT_ID") {
     //     id
     //     name
     //     email
-    //     enrolledCourses
+    //     appointments {
+    //       date
+    //       confirmed
+    //     }
     //     weakPoints
     //   }
     // }    
@@ -36,7 +47,10 @@ const StudentQueries = {
     args: { id: { type: GraphQLID } },
     async resolve(_, args, context) {
       await studentProtect(context)
-      const student = await Student.findById(args.id)
+      const student = await Student.findById(args.id).populate({
+        path: "appointments",
+        populate: { path: "tutor" }
+      })
       if (!student) throw new Error("Student not found")
       return student
     }
@@ -46,18 +60,8 @@ const StudentQueries = {
 const StudentMutations = {
   addStudent: {
     // mutation {
-    //   addStudent(
-    //     name: "Alice Johnson"
-    //     email: "alice@example.com"
-    //     password: "securepassword"
-    //     weakPoints: ["Grammar"]
-    //   ) {
-    //     id
-    //     name
-    //     email
-    //     weakPoints
-    //     enrolledCourses
-    //     token
+    //   addStudent(name: "", email: "", password: "", weakPoints: [""]) {
+    //     id name email weakPoints appointments { id }
     //   }
     // } 
     type: StudentType,
@@ -77,7 +81,7 @@ const StudentMutations = {
           name: args.name,
           email: args.email,
           password: args.password,
-          enrolledCourses: [],
+          appointments: [],
           weakPoints: args.weakPoints
         })
 
@@ -91,21 +95,10 @@ const StudentMutations = {
       }
     }
   },
-    // mutation {
-    //   updateStudent(
-    //     id: "STUDENT_ID"
-    //     name: "New Student Name"
-    //     email: "newemail@example.com"
-    //   ) {
-    //     id
-    //     name
-    //     email
-    //     weakPoints
-    //     enrolledCourses
-    //     image
-    //   }
-    // }
   updateStudent: {
+    // mutation {
+    //   updateStudent(id: "STUDENT_ID", name: "", appointments: ["APPT_ID"]) { id name appointments { date } }
+    // }
     type: StudentType,
     args: {
       id: { type: GraphQLID },
@@ -113,18 +106,18 @@ const StudentMutations = {
       email: { type: GraphQLString },
       password: { type: GraphQLString },
       weakPoints: { type: new GraphQLList(GraphQLString) },
-      enrolledCourses: { type: new GraphQLList(GraphQLString) },
+      appointments: { type: new GraphQLList(GraphQLID) },
       image: { type: GraphQLString }
     },
     async resolve(_, args, context) {
       await protect(context)
-      const { id, name, email, password, weakPoints, enrolledCourses, image } = args
+      const { id, name, email, password, weakPoints, appointments, image } = args
       if (
         name === undefined &&
         email === undefined &&
         password === undefined &&
         weakPoints === undefined &&
-        enrolledCourses === undefined &&
+        appointments === undefined &&
         image === undefined
       ) {
         throw new Error("At least one field must be provided to update")
@@ -136,20 +129,17 @@ const StudentMutations = {
         updateFields.password = await require("bcryptjs").hash(password, 10)
       }
       if (weakPoints !== undefined) updateFields.weakPoints = weakPoints
-      if (enrolledCourses !== undefined) updateFields.enrolledCourses = enrolledCourses
+      if (appointments !== undefined) updateFields.appointments = appointments
       if (image !== undefined) updateFields.image = image
-      const updatedStudent = await Student.findByIdAndUpdate(id, updateFields, { new: true })
+      const updatedStudent = await Student.findByIdAndUpdate(id, updateFields, { new: true }).populate({
+        path: "appointments",
+        populate: { path: "tutor" }
+      })
       if (!updatedStudent) throw new Error("Student not found")
       return updatedStudent
     }
   },
   deleteStudent: {
-    // mutation {
-    //   deleteStudent(id: "60f5a4f2b5e3b90017d25b8a") {
-    //     id
-    //     name
-    //   }
-    // }
     type: StudentType,
     args: { id: { type: GraphQLID } },
     async resolve(_, args, context) {

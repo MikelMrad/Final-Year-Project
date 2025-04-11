@@ -107,7 +107,6 @@ const authMutations = {
         name,
         email: normalizedEmail,
         password,
-        enrolledCourses: [],
         weakPoints,
         image: image,
       })

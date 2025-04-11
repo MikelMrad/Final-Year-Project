@@ -82,7 +82,7 @@ export default function Home() {
 
           {dropdownOpen && (
             <div className={styles.dropdown}>
-              <Link href="/Profile">Profile</Link>
+              <Link href="/ProfilePage">Profile</Link>
               <Link href="/Calendar">Calendar</Link>
               {
                 isLoggedIn ? 

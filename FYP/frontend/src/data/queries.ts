@@ -208,8 +208,18 @@ export const GET_STUDENTS_QUERY = gql`
       id
       name
       email
-      enrolledCourses
       weakPoints
+      image
+      appointments {
+        id
+        date
+        confirmed
+        tutor {
+          id
+          name
+          email
+        }
+      }
     }
   }
 `;
@@ -220,11 +230,22 @@ export const GET_STUDENT_QUERY = gql`
       id
       name
       email
-      enrolledCourses
       weakPoints
+      image
+      appointments {
+        id
+        date
+        confirmed
+        tutor {
+          id
+          name
+          email
+        }
+      }
     }
   }
 `;
+
 
 export const ADD_STUDENT_MUTATION = gql`
   mutation AddStudent(
@@ -254,7 +275,6 @@ export const UPDATE_STUDENT_MUTATION = gql`
     $email: String
     $password: String
     $weakPoints: [String!]
-    $enrolledCourses: [String!]
     $image: String
   ) {
     updateStudent(
@@ -263,18 +283,26 @@ export const UPDATE_STUDENT_MUTATION = gql`
       email: $email
       password: $password
       weakPoints: $weakPoints
-      enrolledCourses: $enrolledCourses
       image: $image
     ) {
       id
       name
       email
       weakPoints
-      enrolledCourses
       image
+      appointments {
+        id
+        date
+        confirmed
+        tutor {
+          id
+          name
+        }
+      }
     }
   }
 `;
+
 
 export const DELETE_STUDENT_MUTATION = gql`
   mutation DeleteStudent($id: ID!) {
