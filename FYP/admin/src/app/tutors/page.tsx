@@ -1,15 +1,18 @@
-// /pages/tutors/page.ts
 'use client'
-import { useQuery, useMutation } from "@apollo/client"
-import { DELETE_TUTOR, GET_ALL_TUTORS } from "../data/queries"
+import { useQuery } from "@apollo/client"
+import {  GET_ALL_TUTORS } from "../data/queries"
 import Sidebar from "../../components/AdminSidebar/page"
 import styles from "./style.module.css"
-import { useRouter } from "next/navigation" // Use the correct hook for navigation
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export default function TutorsPage() {
   const { data, loading, error, refetch } = useQuery(GET_ALL_TUTORS)
-  const [deleteTutor] = useMutation(DELETE_TUTOR)
-  const router = useRouter() // Initialize the router hook
+  const router = useRouter()
+
+  useEffect(() => {
+    refetch()
+  }, [])
 
   return (
     <div className={styles.pageWrapper}>
@@ -34,7 +37,7 @@ export default function TutorsPage() {
                   <button
                     className={styles.editButton}
                     onClick={() =>router.push(`/tutors/${tutor.id}`)
-                  } // Correct path for dynamic route
+                  }
                   >
                     Edit
                   </button>

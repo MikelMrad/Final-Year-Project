@@ -21,6 +21,8 @@ const InputWorkingHoursType = new GraphQLInputObjectType({
   }
 })
 
+const Appointment = require("../../models/Appointment")
+
 const TutorQueries = {
   // query {
   //   tutors {
@@ -140,18 +142,18 @@ const TutorMutations = {
   //     hourlyRate: 60
   //     subjects: ["English", "Physics"]
   //     image: "new-profile.jpg"
-    // ) {
-    //   id
-    //   name
-    //   email
-    //   hourlyRate
-    //   subjects
-    //   image
-    //   workingHours {
-    //     day
-    //     startTime
-    //     endTime
-    //   }
+  //   ) {
+  //     id
+  //     name
+  //     email
+  //     hourlyRate
+  //     subjects
+  //     image
+  //     workingHours {
+  //       day
+  //       startTime
+  //       endTime
+  //     }
   //   }
   // }
   updateTutor: {
@@ -198,7 +200,7 @@ const TutorMutations = {
   
       return updatedTutor
     }
-  },  
+  },
   // mutation {
   //   deleteTutor(id: "TUTOR_ID") {
   //     id
@@ -210,7 +212,10 @@ const TutorMutations = {
     args: { id: { type: GraphQLID } },
     async resolve(_, args, context) {
       await adminProtect(context)
-      return Tutor.findByIdAndDelete(args.id)
+      const deletedTutor = await Tutor.findByIdAndDelete(args.id)
+      if (!deletedTutor) throw new Error("Tutor not found")
+      await Appointment.deleteMany({ tutor: args.id })
+      return deletedTutor
     }
   }
 }

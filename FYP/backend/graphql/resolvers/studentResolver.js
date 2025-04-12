@@ -4,6 +4,7 @@ const { protect } = require("../../middleware/authMiddleware")
 const { adminProtect } = require("../../middleware/adminAuthMiddleware")
 const generateToken = require("../../config/generateTokens")
 const { GraphQLList, GraphQLID, GraphQLString } = require("graphql")
+const Appointment = require("../../models/Appointment")
 
 const StudentQueries = {
   students: {
@@ -143,7 +144,12 @@ const StudentMutations = {
     args: { id: { type: GraphQLID } },
     async resolve(_, args, context) {
       await adminProtect(context)
-      return await Student.findByIdAndDelete(args.id)
+      // Find and delete the student
+      const deletedStudent = await Student.findByIdAndDelete(args.id)
+      if (!deletedStudent) throw new Error("Student not found")
+      // Delete all appointments that reference the deleted student
+      await Appointment.deleteMany({ student: args.id })
+      return deletedStudent
     }
   }
 }

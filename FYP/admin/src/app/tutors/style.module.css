@@ -3,7 +3,7 @@
 }
 
 .mainContent {
-  margin-left: 250px; /* match the sidebar width */
+  margin-left: 250px;
   padding: 2rem;
   width: 100%;
   background-color: #f9f9f9;
@@ -31,15 +31,16 @@
 }
 
 .editButton {
-  background-color: #e74c3c;
+  background-color: #1abc9c;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
   margin-top: 0.5rem;
   cursor: pointer;
   border-radius: 4px;
+  transition: 0.5s ease;
 }
 
 .editButton:hover {
-  background-color: #c0392b;
+  background-color: #117e68;
 }

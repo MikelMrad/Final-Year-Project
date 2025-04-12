@@ -1,51 +1,68 @@
 .sidebar {
-    width: 250px;
-    background-color: #2c3e50;
-    color: #fff;
-    padding: 2rem 1rem;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
+  width: 250px;
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 2rem 1rem;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
   
-  .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 2rem;
-  }
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+}
   
-  .nav {
-    display: flex;
-    flex-direction: column;
-  }
+.nav {
+  display: flex;
+  flex-direction: column;
+}
   
-  .navList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
   
-  .navItem {
-    margin-bottom: 1rem;
-  }
+.navItem {
+  margin-bottom: 1rem;
+}
   
-  .link {
-    display: block;
-    color: #ecf0f1;
-    text-decoration: none;
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    transition: background 0.2s ease;
-  }
+.link {
+  display: block;
+  color: #ecf0f1;
+  text-decoration: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
   
-  .link:hover {
-    background-color: #34495e;
-  }
+.link:hover {
+  background-color: #34495e;
+}
   
-  .active {
-    background-color: #1abc9c;
-    font-weight: bold;
-  }
-  
+.active {
+  background-color: #1abc9c;
+  font-weight: bold;
+}
+
+/* Logout button styled similarly to links, with a red theme */
+.logoutButton {
+  display: block;
+  width: 100%;
+  background-color: #e74c3c;
+  color: #ecf0f1;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-top: 2rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: #c0392b;
+}

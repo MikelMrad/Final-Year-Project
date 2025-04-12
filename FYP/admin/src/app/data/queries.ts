@@ -192,3 +192,12 @@ export const LOGIN_ADMIN_MUTATION = gql`
   }
 `;
 
+export const GET_ADMIN_PROFILE = gql`
+  query GetAdminProfile {
+    getAdminProfile {
+      id
+      name
+      email
+    }
+  }
+`

@@ -1,11 +1,9 @@
-/* src/app/dashboard/style.module.css */
-
 .dashboardContainer {
     display: flex;
   }
   
   .mainContent {
-    margin-left: 250px; /* Match sidebar width */
+    margin-left: 250px;
     padding: 40px;
     width: calc(100% - 250px);
     min-height: 100vh;
