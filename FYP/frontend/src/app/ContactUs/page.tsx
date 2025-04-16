@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, FormEvent } from "react"
-import { Container, Box, TextField, Typography, Button, Grid2 } from "@mui/material"
+import { Container, Box, TextField, Typography, Button } from "@mui/material"
 import NavBar from "../../../modules/NavBar"
 import Footer from "../../../modules/Footer"
 
@@ -32,7 +32,12 @@ export default function ContactUsPage() {
       <NavBar />
       <Container maxWidth="md" sx={{ py: 8 }}>
         <Box sx={{ textAlign: "center", mb: 4 }}>
-          <Typography variant="h3" component="h1" gutterBottom sx={{ fontFamily: "Bebas Neue, sans-serif", color: "#2980b9" }}>
+          <Typography
+            variant="h3"
+            component="h1"
+            gutterBottom
+            sx={{ fontFamily: "Bebas Neue, sans-serif", color: "#2980b9" }}
+          >
             Contact Us
           </Typography>
           <Typography variant="subtitle1" sx={{ color: "#2c3e50" }}>
@@ -42,7 +47,12 @@ export default function ContactUsPage() {
         <Box
           component="form"
           onSubmit={handleSubmit}
-          sx={{ backgroundColor: "#fff", borderRadius: 2, p: 4, boxShadow: "0px 4px 10px rgba(0,0,0,0.1)" }}
+          sx={{
+            backgroundColor: "#fff",
+            borderRadius: 2,
+            p: 4,
+            boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+          }}
         >
           {error && (
             <Typography variant="body1" color="error" sx={{ mb: 2 }}>
@@ -54,16 +64,24 @@ export default function ContactUsPage() {
               {success}
             </Typography>
           )}
-          <Grid2 container spacing={2}>
-            <Grid2 item xs={12} sm={6}>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 2,
+              flexWrap: "wrap",
+            }}
+          >
+            <Box sx={{ flex: "1 1 calc(33.33% - 16px)" }}>
               <TextField
                 label="Name"
                 fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-            </Grid2>
-            <Grid2 item xs={12} sm={6}>
+            </Box>
+            <Box sx={{ flex: "1 1 calc(33.33% - 16px)" }}>
               <TextField
                 label="Email"
                 type="email"
@@ -71,26 +89,28 @@ export default function ContactUsPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </Grid2>
-            <Grid2 item xs={12}>
+            </Box>
+            <Box sx={{ flex: "1 1 calc(33.33% - 16px)" }}>
               <TextField
                 label="Subject"
                 fullWidth
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
               />
-            </Grid2>
-            <Grid2 item xs={12}>
-              <TextField
-                label="Message"
-                fullWidth
-                multiline
-                rows={6}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-            </Grid2>
-          </Grid2>
+            </Box>
+          </Box>
+
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              label="Message"
+              fullWidth
+              multiline
+              rows={6}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+          </Box>
+
           <Box sx={{ textAlign: "center", mt: 3 }}>
             <Button variant="contained" color="primary" type="submit" size="large">
               Send Message

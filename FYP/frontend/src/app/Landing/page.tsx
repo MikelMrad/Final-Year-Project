@@ -86,9 +86,9 @@ export default function page() {
         </div>
         <div className={styles.infoContainer}>
           <div>
-            <h1>What is TutorMe?</h1>
-            <p>TutorMe is a platform that connects students with tutors. We offer a wide range of subjects and levels to suit your needs. Whether you are looking for help with homework, exam preparation or just want to learn something new, TutorMe has you covered.</p>
-            <p>Our tutors are experienced professionals who are passionate about teaching and helping students succeed. They are available to provide one-on-one tutoring sessions in person or online, so you can learn at your own pace and in your own time.</p>
+            <h1>Why TutorMe?</h1>
+            <p>At Tutor Me, we believe every student deserves personalized guidance to reach their full potential. Our platform connects learners with expert tutors who are passionate about teaching and committed to academic success.</p>
+            <p>Whether you're struggling with a subject or aiming to get ahead, we provide tailored sessions that fit your goals and schedule. We prioritize flexibility, affordability, and quality, ensuring every student gets the support they need. With TutorMe, learning becomes easier, more engaging, and genuinely empowering. Join us and experience education that’s built around you.</p>
           </div>
           <Image
             src={SecondPic}

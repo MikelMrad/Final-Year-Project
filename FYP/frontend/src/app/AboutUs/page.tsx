@@ -33,7 +33,7 @@ export default function AboutUsPage() {
           </Typography>
         </Box>
         <Box sx={{ textAlign: "center", p: 2, backgroundColor: "#ffffff", borderRadius: 2, boxShadow: "0px 4px 10px rgba(0,0,0,0.1)" }}>
-          <Typography variant="h5" component="h2" gutterBottom sx={{ color: "#2980b9" }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontFamily: "Bebas Neue, sans-serif", color: "#2980b9" }}>
             Our Vision & Values
           </Typography>
           <Typography variant="body1" paragraph>
