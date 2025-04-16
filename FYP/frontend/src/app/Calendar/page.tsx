@@ -51,13 +51,10 @@ const CalendarPage = () => {
     const confirmedEvents = appointments
       ?.filter((appt) => appt.confirmed)
       .map((appt) => {
-        const startDate = new Date(parseInt(appt.date)) // Convert to Date object
-        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000) // 1 hour later
-
-        // Format time to display (e.g., "9:00 AM - 10:00 AM")
+        const startDate = new Date(parseInt(appt.date))
+        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000)
         const startTime = moment(startDate).format("h:mm A")
         const endTime = moment(endDate).format("h:mm A")
-
         return {
           id: appt.id,
           title: (

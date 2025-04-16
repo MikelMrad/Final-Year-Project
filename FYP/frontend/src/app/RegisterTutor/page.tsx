@@ -126,7 +126,7 @@ export default function RegisterTutorPage() {
   }
 
   const isValidPassword = (password: string): boolean => {
-    return password.length > 7 && /[A-Z]/.test(password)
+    return password.length > 8 && /[A-Z]/.test(password)
   }
 
   const timesOverlap = (startA: string, endA: string, startB: string, endB: string): boolean => {
@@ -165,24 +165,24 @@ export default function RegisterTutorPage() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       
-      const validTypes = ["image/jpeg", "image/jpg" , "image/png"];
+      const validTypes = ["image/jpeg", "image/jpg" , "image/png"]
       if (!validTypes.includes(file.type)) {
-        setError("Only JPG and PNG images are allowed.");
-        return;
+        setError("Only JPG and PNG images are allowed.")
+        return
       }
   
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      const maxSize = 5 * 1024 * 1024
       if (file.size > maxSize) {
-        setError("File size exceeds the 5MB limit.");
-        return;
+        setError("File size exceeds the 5MB limit.")
+        return
       }
   
       try {
-        const base64 = await convertToBase64(file);
-        setImageURL(base64);
+        const base64 = await convertToBase64(file)
+        setImageURL(base64)
       } catch (err) {
-        console.error("Image conversion failed", err);
-        setError("Image upload failed");
+        console.error("Image conversion failed", err)
+        setError("Image upload failed")
       }
     }
   }

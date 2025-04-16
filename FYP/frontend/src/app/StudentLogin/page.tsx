@@ -43,7 +43,7 @@ export default function StudentLoginPage() {
       return false
     }
     if (password.length < 6) {
-      alert("Password must be at least 6 characters.")
+      alert("Password must be at least 8 characters.")
       return false
     }
     return true
