@@ -1,0 +1,71 @@
+.pageWrapper {
+  display: flex;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+  background-color: #f8f8f8;
+  min-height: 100vh;
+  margin-left:250px;
+}
+
+.pageTitle {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color:#2c3e50;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.addButton {
+  background-color: #1abc9c;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.expenseList {
+  list-style: none;
+  padding: 0;
+}
+
+.expenseCard {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  color:#2c3e50;
+  margin-bottom: 1rem;
+}
+
+.buttonGroup {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editButton {
+  background-color: #1abc9c;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteButton {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}

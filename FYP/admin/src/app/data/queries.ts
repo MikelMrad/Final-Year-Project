@@ -201,3 +201,55 @@ export const GET_ADMIN_PROFILE = gql`
     }
   }
 `
+
+export const GET_ALL_EXPENSES = gql`
+  query GetAllExpenses {
+    expenses {
+      id
+      title
+      amount
+      date
+    }
+  }
+`
+
+export const GET_EXPENSE = gql`
+  query GetExpense($id: ID!) {
+    expense(id: $id) {
+      id
+      title
+      amount
+      date
+    }
+  }
+`
+
+export const ADD_EXPENSE = gql`
+  mutation AddExpense($title: String!, $amount: Float!, $date: String!) {
+    addExpense(title: $title, amount: $amount, date: $date) {
+      id
+      title
+      amount
+      date
+    }
+  }
+`
+
+export const UPDATE_EXPENSE = gql`
+  mutation UpdateExpense($id: ID!, $title: String!, $amount: Float!, $date: String!) {
+    updateExpense(id: $id, title: $title, amount: $amount, date: $date) {
+      id
+      title
+      amount
+      date
+    }
+  }
+`
+
+export const DELETE_EXPENSE = gql`
+  mutation DeleteExpense($id: ID!) {
+    deleteExpense(id: $id) {
+      id
+    }
+  }
+`

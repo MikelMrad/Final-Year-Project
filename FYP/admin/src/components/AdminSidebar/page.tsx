@@ -18,6 +18,7 @@ const AdminSidebar = () => {
     { label: "Home", href: "/dashboard" },
     { label: "Tutors", href: "/tutors" },
     { label: "Students", href: "/students" },
+    { label: "Expenses", href: "/expenses" },
     { label: "Appointments", href: "/appointments" },
   ]
 

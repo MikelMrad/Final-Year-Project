@@ -6,6 +6,7 @@ const { ReviewQueries, ReviewMutations } = require("./resolvers/reviewResolver")
 const { StudentQueries, StudentMutations } = require("./resolvers/studentResolver")
 const { PaymentQueries, PaymentMutations } = require("./resolvers/paymentResolver")
 const { SubjectQueries, SubjectMutations } = require("./resolvers/subjectResolver")
+const { ExpenseQueries, ExpenseMutations } = require("./resolvers/expenseResolver")
 const { AppointmentQueries, AppointmentMutations } = require("./resolvers/appointmentResolver")
 const { NotificationQueries, NotificationMutations } = require("./resolvers/notificationResolver")
 
@@ -19,7 +20,8 @@ const RootQuery = new GraphQLObjectType({
     ...PaymentQueries,
     ...SubjectQueries,
     ...AppointmentQueries,
-    ...NotificationQueries
+    ...NotificationQueries,
+    ...ExpenseQueries,
   }
 })
 
@@ -35,6 +37,7 @@ const Mutation = new GraphQLObjectType({
     ...StudentMutations,
     ...AppointmentMutations,
     ...NotificationMutations,
+    ...ExpenseMutations,
   }
 })
 
