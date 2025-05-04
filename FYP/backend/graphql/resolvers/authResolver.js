@@ -34,9 +34,10 @@ const authMutations = {
           })
         ),
       },
+      grade: { type: GraphQLInt }
     },
     async resolve(_, args) {
-      const { name, email, password, image, hourlyRate, subjects, workingHours } = args
+      const { name, email, password, image, hourlyRate, subjects, workingHours, grade } = args
       const normalizedEmail = email.toLowerCase()
 
       const existingTutor = await Tutor.findOne({ email: normalizedEmail })
@@ -51,6 +52,7 @@ const authMutations = {
         hourlyRate,
         subjects,
         workingHours,
+        grade
       })
 
       await tutor.save()
@@ -95,8 +97,9 @@ const authMutations = {
       password: { type: GraphQLString },
       weakPoints: { type: new GraphQLList(GraphQLString) },
       image: { type: GraphQLString },
+      grade: { type: GraphQLInt }
     },
-    async resolve(_, { name, email, password, weakPoints, image }) {
+    async resolve(_, { name, email, password, weakPoints, image, grade }) {
       const normalizedEmail = email.toLowerCase()
 
       const existingStudent = await Student.findOne({ email: normalizedEmail })
@@ -109,6 +112,7 @@ const authMutations = {
         password,
         weakPoints,
         image: image,
+        grade
       })
 
       await student.save()
@@ -145,6 +149,5 @@ const authMutations = {
     },
   },
 }
-
 
 module.exports = { authMutations }

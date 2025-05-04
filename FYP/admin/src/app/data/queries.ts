@@ -138,6 +138,8 @@ export const GET_ALL_APPOINTMENTS = gql`
       tutor {
         id
         name
+        hourlyRate
+        subjects
       }
       student {
         id
@@ -209,6 +211,7 @@ export const GET_ALL_EXPENSES = gql`
       title
       amount
       date
+      count
     }
   }
 `
@@ -220,28 +223,31 @@ export const GET_EXPENSE = gql`
       title
       amount
       date
+      count
     }
   }
 `
 
 export const ADD_EXPENSE = gql`
-  mutation AddExpense($title: String!, $amount: Float!, $date: String!) {
-    addExpense(title: $title, amount: $amount, date: $date) {
+  mutation AddExpense($title: String!, $amount: Float!, $date: String!, $count: Int) {
+    addExpense(title: $title, amount: $amount, date: $date, count: $count) {
       id
       title
       amount
       date
+      count
     }
   }
 `
 
 export const UPDATE_EXPENSE = gql`
-  mutation UpdateExpense($id: ID!, $title: String!, $amount: Float!, $date: String!) {
-    updateExpense(id: $id, title: $title, amount: $amount, date: $date) {
+  mutation UpdateExpense($id: ID!, $title: String!, $amount: Float!, $date: String!, $count: Int) {
+    updateExpense(id: $id, title: $title, amount: $amount, date: $date, count: $count) {
       id
       title
       amount
       date
+      count
     }
   }
 `
@@ -250,6 +256,15 @@ export const DELETE_EXPENSE = gql`
   mutation DeleteExpense($id: ID!) {
     deleteExpense(id: $id) {
       id
+    }
+  }
+`
+
+export const GET_ALL_SUBJECTS = gql`
+  query GetSubjects {
+    subjects {
+      id
+      name
     }
   }
 `

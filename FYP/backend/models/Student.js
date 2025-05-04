@@ -13,7 +13,8 @@ const StudentSchema = new mongoose.Schema({
   password: { type: String, required: true },
   appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }],
   weakPoints: [{ type: String }],
-  image: { type: String, default: "default-avatar.png" }
+  image: { type: String, default: "" },
+  grade: { type: Number, required: true }
 }, { timestamps: true })
 
 StudentSchema.pre("save", async function(next) {

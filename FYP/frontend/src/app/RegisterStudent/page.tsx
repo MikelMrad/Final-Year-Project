@@ -13,7 +13,11 @@ import {
   TextField,
   Typography,
   Button,
-  CircularProgress
+  CircularProgress,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel
 } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { REGISTER_STUDENT_MUTATION, GET_SUBJECTS_QUERY } from "@/data/queries"
@@ -31,6 +35,7 @@ interface StudentRegisterResponse {
     weakPoints: string[]
     image: string
     token: string
+    grade: number
   }
 }
 
@@ -40,6 +45,7 @@ interface StudentRegisterVariables {
   password: string
   weakPoints: string[]
   image?: string
+  grade: number
 }
 
 const convertToBase64 = (file: File): Promise<string> => {
@@ -62,6 +68,7 @@ export default function RegisterStudentPage() {
   const [imageURL, setImageURL] = useState("")
   const [selectedWeakPoints, setSelectedWeakPoints] = useState<Subject[]>([])
   const [error, setError] = useState("")
+const [grade, setGrade] = useState<number>(12)
 
   const { data: subjectsData, loading: subjectsLoading } = useQuery<{ subjects: Subject[] }>(GET_SUBJECTS_QUERY)
   const [registerStudent, { loading }] = useMutation<StudentRegisterResponse, StudentRegisterVariables>(REGISTER_STUDENT_MUTATION)
@@ -114,6 +121,7 @@ export default function RegisterStudentPage() {
           password,
           weakPoints,
           image: imageURL || (image !== "" ? image : undefined),
+          grade
         },
       })
 
@@ -158,7 +166,22 @@ export default function RegisterStudentPage() {
           <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           <TextField label="Image URL (optional)" value={image} onChange={(e) => setImage(e.target.value)} />
-
+          <FormControl fullWidth required>
+            <InputLabel id="grade-select-label">Grade</InputLabel>
+            <Select
+              labelId="grade-select-label"
+              value={grade}
+              label="Grade"
+              onChange={(e) => setGrade(Number(e.target.value))}
+            >
+              {Array.from({ length: 12 }, (_, i) => i + 1).map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          
           <Box>
             <Typography variant="body1">Or Upload an Image:</Typography>
             <input type="file" accept="image/*" onChange={handleFileChange} />

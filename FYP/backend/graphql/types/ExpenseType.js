@@ -1,4 +1,4 @@
-const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLFloat } = require("graphql")
+const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLFloat, GraphQLInt } = require("graphql")
 
 const ExpenseType = new GraphQLObjectType({
   name: "Expense",
@@ -14,6 +14,7 @@ const ExpenseType = new GraphQLObjectType({
           : new Date(expense.date).toISOString()
       },
     },
+    count: { type: GraphQLInt },
   }),
 })
 

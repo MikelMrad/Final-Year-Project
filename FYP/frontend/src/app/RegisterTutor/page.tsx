@@ -15,7 +15,7 @@ import {
   Button,
   CircularProgress,
   MenuItem,
-  Grid2 ,
+  Grid as Grid2,
   InputLabel,
   Select,
   FormControl
@@ -43,6 +43,7 @@ interface TutorRegisterResponse {
     subjects: string[]
     image: string
     workingHours: WorkingHour[]
+    grade: number
     token: string
   }
 }
@@ -55,6 +56,7 @@ interface TutorRegisterVariables {
   subjects: string[]
   image?: string
   workingHours?: WorkingHour[]
+  grade: number
 }
 
 const daysOfWeek = [
@@ -87,6 +89,7 @@ export default function RegisterTutorPage() {
   const [imageURL, setImageURL] = useState("")
   const [selectedSubjects, setSelectedSubjects] = useState<Subject[]>([])
   const [workingHours, setWorkingHours] = useState<WorkingHour[]>([])
+  const [grade, setGrade] = useState<number>(12) // Default grade is 12
   const [error, setError] = useState("")
 
   const { data: subjectsData, loading: subjectsLoading } = useQuery<{ subjects: Subject[] }>(GET_SUBJECTS_QUERY)
@@ -163,20 +166,17 @@ export default function RegisterTutorPage() {
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      
-      const validTypes = ["image/jpeg", "image/jpg" , "image/png"]
+      const file = e.target.files[0]
+      const validTypes = ["image/jpeg", "image/jpg", "image/png"]
       if (!validTypes.includes(file.type)) {
         setError("Only JPG and PNG images are allowed.")
         return
       }
-  
       const maxSize = 5 * 1024 * 1024
       if (file.size > maxSize) {
         setError("File size exceeds the 5MB limit.")
         return
       }
-  
       try {
         const base64 = await convertToBase64(file)
         setImageURL(base64)
@@ -186,8 +186,6 @@ export default function RegisterTutorPage() {
       }
     }
   }
-  
-  
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -205,12 +203,12 @@ export default function RegisterTutorPage() {
       return
     }
     for (let i = 0; i < workingHours.length; i++) {
-      const wh = workingHours[i]
-      if (!wh.day || !wh.startTime || !wh.endTime) {
+      const workingHour = workingHours[i]
+      if (!workingHour.day || !workingHour.startTime || !workingHour.endTime) {
         setError(`Please fill in all fields for working hour entry ${i + 1}`)
         return
       }
-      if (!isValidTimeRange(wh.startTime, wh.endTime)) {
+      if (!isValidTimeRange(workingHour.startTime, workingHour.endTime)) {
         setError(`Working hour ${i + 1}: End time must be after start time.`)
         return
       }
@@ -228,6 +226,7 @@ export default function RegisterTutorPage() {
           subjects: subjectNames,
           image: imageURL || (image !== "" ? image : undefined),
           workingHours: workingHours.length > 0 ? workingHours : undefined,
+          grade // send grade in mutation
         },
       })
       if (data?.registerTutor) {
@@ -251,8 +250,8 @@ export default function RegisterTutorPage() {
   }
 
   const subjectOptions = subjectsData?.subjects
-    .filter(subject => !selectedSubjects.find(sel => sel.name === subject.name))
-    .map(subject => ({ id: subject.id, name: subject.name })) || []
+    .filter((subject) => !selectedSubjects.find((sel) => sel.name === subject.name))
+    .map((subject) => ({ id: subject.id, name: subject.name })) || []
 
   return (
     <div>
@@ -271,6 +270,24 @@ export default function RegisterTutorPage() {
           <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           <TextField label="Hourly Rate" type="number" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} required />
+          
+          {/* New grade dropdown */}
+          <FormControl fullWidth required>
+            <InputLabel id="grade-select-label">Grade</InputLabel>
+            <Select
+              labelId="grade-select-label"
+              value={grade}
+              label="Grade"
+              onChange={(e) => setGrade(Number(e.target.value))}
+            >
+              {Array.from({ length: 12 }, (_, i) => i + 1).map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          
           <Box>
             <Typography variant="body1">Or Upload an Image:</Typography>
             <input type="file" accept="image/*" onChange={handleFileChange} />
@@ -294,14 +311,14 @@ export default function RegisterTutorPage() {
           )}
           <Box sx={{ mt: 2 }}>
             <Typography variant="h6" sx={{ mb: 1 }}>Working Hours</Typography>
-            {workingHours.map((wh, index) => (
+            {workingHours.map((workingHour, index) => (
               <Grid2 container spacing={2} key={index} alignItems="center" sx={{ mb: 2 }}>
                 <Grid2 item xs={3}>
                   <TextField
                     select
                     fullWidth
                     label="Day *"
-                    value={wh.day}
+                    value={workingHour.day}
                     onChange={(e) => updateWorkingHour(index, "day", e.target.value)}
                     required
                   >
@@ -317,7 +334,7 @@ export default function RegisterTutorPage() {
                     fullWidth
                     label="Start Time *"
                     type="time"
-                    value={wh.startTime}
+                    value={workingHour.startTime}
                     onChange={(e) => updateWorkingHour(index, "startTime", e.target.value)}
                     InputLabelProps={{ shrink: true }}
                     required
@@ -328,7 +345,7 @@ export default function RegisterTutorPage() {
                     fullWidth
                     label="End Time *"
                     type="time"
-                    value={wh.endTime}
+                    value={workingHour.endTime}
                     onChange={(e) => updateWorkingHour(index, "endTime", e.target.value)}
                     InputLabelProps={{ shrink: true }}
                     required

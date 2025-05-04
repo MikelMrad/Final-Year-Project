@@ -13,7 +13,8 @@ const TutorSchema = new mongoose.Schema({
   password: { type: String, required: true },
   hourlyRate: { type: Number, required: true },
   subjects: [{ type: String }],
-  image: { type: String, default: "default-avatar.png" },
+  image: { type: String, default: "" },
+  grade: { type: Number, required: true }, 
   appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }],
   workingHours: [{
     day: { type: String, required: true },

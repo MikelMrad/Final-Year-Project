@@ -1,22 +1,52 @@
-.dashboardContainer {
-    display: flex;
-  }
-  
-  .mainContent {
-    margin-left: 250px;
-    padding: 40px;
-    width: calc(100% - 250px);
-    min-height: 100vh;
-    background: linear-gradient(to bottom right, #eafbee, #ffffff);
-    color: #2e7d32;
-  }
-  
-  .mainContent h1 {
-    font-size: 32px;
-    margin-bottom: 16px;
-  }
-  
-  .mainContent p {
-    font-size: 18px;
-  }
-  
+/* app/admin/home/style.module.css */
+.pageWrapper {
+  display: flex;
+  background: #ecf0f1;
+  height: 100vh;
+}
+.mainContent {
+  flex: 1;
+  padding: 24px;
+  background: #f9fef7;
+  margin-left: 250px;
+}
+.pageTitle {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color:#2c3e50;
+}
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.select {
+  padding: 8px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  background: white;
+  color: #2c3e50;
+}
+.statsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+.statsTable th,
+.statsTable td {
+  border: 1px solid #bdc3c7;
+  padding: 8px;
+  text-align: center;
+  color:#000000;
+}
+.statsTable th {
+  background: #16a085;
+  color: white;
+}
+.metric {
+  font-weight: bold;
+  background: #ecf0f1;
+}
+.totalRow {
+  background: #dfeee8;
+  font-weight: bold;
+}

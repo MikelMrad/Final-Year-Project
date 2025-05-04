@@ -1,26 +1,12 @@
 const Student = require("../../models/Student")
 const StudentType = require("../types/StudentType")
-const { protect } = require("../../middleware/authMiddleware")
-const { adminProtect } = require("../../middleware/adminAuthMiddleware")
+const { protect, adminProtect } = require("../../middleware/authMiddleware")
 const generateToken = require("../../config/generateTokens")
-const { GraphQLList, GraphQLID, GraphQLString } = require("graphql")
+const { GraphQLList, GraphQLID, GraphQLString, GraphQLInt } = require("graphql")
 const Appointment = require("../../models/Appointment")
 
 const StudentQueries = {
   students: {
-    // query {
-    //   students {
-    //     id
-    //     name
-    //     email
-    //     appointments {
-    //       id
-    //       date
-    //       tutor { name }
-    //     }
-    //     weakPoints
-    //   }
-    // }  
     type: new GraphQLList(StudentType),
     async resolve(_, args, context) {
       await protect(context)
@@ -31,18 +17,6 @@ const StudentQueries = {
     }
   },
   student: {
-    // query {
-    //   student(id: "STUDENT_ID") {
-    //     id
-    //     name
-    //     email
-    //     appointments {
-    //       date
-    //       confirmed
-    //     }
-    //     weakPoints
-    //   }
-    // }    
     type: StudentType,
     args: { id: { type: GraphQLID } },
     async resolve(_, args, context) {
@@ -59,46 +33,36 @@ const StudentQueries = {
 
 const StudentMutations = {
   addStudent: {
-    // mutation {
-    //   addStudent(name: "", email: "", password: "", weakPoints: [""]) {
-    //     id name email weakPoints appointments { id }
-    //   }
-    // } 
     type: StudentType,
     args: {
       name: { type: GraphQLString },
       email: { type: GraphQLString },
       password: { type: GraphQLString },
-      weakPoints: { type: new GraphQLList(GraphQLString) }
+      weakPoints: { type: new GraphQLList(GraphQLString) },
+      image: { type: GraphQLString },
+      grade: { type: GraphQLInt } // <-- New grade argument
     },
     async resolve(_, args) {
-      try {
-        const existingStudent = await Student.findOne({ email: args.email })
-        if (existingStudent) {
-          throw new Error("A student with this email already exists.")
-        }
-        const student = new Student({
-          name: args.name,
-          email: args.email,
-          password: args.password,
-          appointments: [],
-          weakPoints: args.weakPoints
-        })
-
-        await student.save()
-        const token = generateToken(student._id)
-        student.token = token
-        return student
-      } catch (error) {
-        console.error("Error in addStudent mutation:", error)
-        throw new Error("Could not save student.")
+      const existingStudent = await Student.findOne({ email: args.email })
+      if (existingStudent) {
+        throw new Error("A student with this email already exists.")
       }
+      const student = new Student({
+        name: args.name,
+        email: args.email,
+        password: args.password,
+        weakPoints: args.weakPoints,
+        image: args.image,
+        grade: args.grade // <-- Save student's grade
+      })
+
+      await student.save()
+      const token = generateToken(student._id)
+      student.token = token
+      return student
     }
   },
   updateStudent: {
-    // mutation {
-    //   updateStudent(id: "STUDENT_ID", name: "", appointments: ["APPT_ID"]) { id name appointments { date } }
-    // }
     type: StudentType,
     args: {
       id: { type: GraphQLID },
@@ -107,18 +71,20 @@ const StudentMutations = {
       password: { type: GraphQLString },
       weakPoints: { type: new GraphQLList(GraphQLString) },
       appointments: { type: new GraphQLList(GraphQLID) },
-      image: { type: GraphQLString }
+      image: { type: GraphQLString },
+      grade: { type: GraphQLInt } // Allow updating grade
     },
     async resolve(_, args, context) {
       await protect(context)
-      const { id, name, email, password, weakPoints, appointments, image } = args
+      const { id, name, email, password, weakPoints, appointments, image, grade } = args
       if (
         name === undefined &&
         email === undefined &&
         password === undefined &&
         weakPoints === undefined &&
         appointments === undefined &&
-        image === undefined
+        image === undefined &&
+        grade === undefined
       ) {
         throw new Error("At least one field must be provided to update")
       }
@@ -131,6 +97,7 @@ const StudentMutations = {
       if (weakPoints !== undefined) updateFields.weakPoints = weakPoints
       if (appointments !== undefined) updateFields.appointments = appointments
       if (image !== undefined) updateFields.image = image
+      if (grade !== undefined) updateFields.grade = grade  // Update grade field
       const updatedStudent = await Student.findByIdAndUpdate(id, updateFields, { new: true }).populate({
         path: "appointments",
         populate: { path: "tutor" }
@@ -144,10 +111,8 @@ const StudentMutations = {
     args: { id: { type: GraphQLID } },
     async resolve(_, args, context) {
       await adminProtect(context)
-      // Find and delete the student
       const deletedStudent = await Student.findByIdAndDelete(args.id)
       if (!deletedStudent) throw new Error("Student not found")
-      // Delete all appointments that reference the deleted student
       await Appointment.deleteMany({ student: args.id })
       return deletedStudent
     }

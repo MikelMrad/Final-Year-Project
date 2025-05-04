@@ -12,17 +12,36 @@ export const LOGIN_TUTOR_MUTATION = gql`
   }
 `;
 
-export const REGISTER_TUTOR_MUTATION =  gql`
-mutation RegisterTutor($name: String, $email: String, $password: String, $image: String, $hourlyRate: Int, $subjects: [String], $workingHours: [WorkingHourInput]) {
-  registerTutor(name: $name, email: $email, password: $password, image: $image, hourlyRate: $hourlyRate, subjects: $subjects, workingHours: $workingHours) {
-    id
-    name
-    email
-    token
-    image
+export const REGISTER_TUTOR_MUTATION = gql`
+  mutation RegisterTutor(
+    $name: String,
+    $email: String,
+    $password: String,
+    $image: String,
+    $hourlyRate: Int,
+    $subjects: [String],
+    $workingHours: [WorkingHourInput],
+    $grade: Int
+  ) {
+    registerTutor(
+      name: $name,
+      email: $email,
+      password: $password,
+      image: $image,
+      hourlyRate: $hourlyRate,
+      subjects: $subjects,
+      workingHours: $workingHours,
+      grade: $grade
+    ) {
+      id
+      name
+      email
+      token
+      image
+      grade
+    }
   }
-}
-`
+`;
 
 export const REGISTER_STUDENT_MUTATION = gql`
   mutation RegisterStudent(
@@ -31,6 +50,7 @@ export const REGISTER_STUDENT_MUTATION = gql`
     $password: String!
     $weakPoints: [String!]
     $image: String
+    $grade: Int
   ) {
     registerStudent(
       name: $name
@@ -38,12 +58,14 @@ export const REGISTER_STUDENT_MUTATION = gql`
       password: $password
       weakPoints: $weakPoints
       image: $image
+      grade: $grade
     ) {
       id
       name
       email
       weakPoints
       image
+      grade
       token
     }
   }
@@ -102,15 +124,15 @@ export const GET_TUTORS_QUERY = gql`
       hourlyRate
       image
       subjects
+      grade
       workingHours {
         day
         startTime
         endTime
       }
-      subjects
     }
   }
-`
+`;
 
 export const GET_TUTOR_QUERY = gql`
   query Tutor($id: ID!) {
@@ -121,6 +143,7 @@ export const GET_TUTOR_QUERY = gql`
       hourlyRate
       subjects
       image
+      grade
       workingHours {
         day
         startTime
@@ -210,6 +233,7 @@ export const GET_STUDENTS_QUERY = gql`
       email
       weakPoints
       image
+      grade
       appointments {
         id
         date
@@ -232,6 +256,7 @@ export const GET_STUDENT_QUERY = gql`
       email
       weakPoints
       image
+      grade
       appointments {
         id
         date
@@ -245,7 +270,6 @@ export const GET_STUDENT_QUERY = gql`
     }
   }
 `;
-
 
 export const ADD_STUDENT_MUTATION = gql`
   mutation AddStudent(
@@ -302,7 +326,6 @@ export const UPDATE_STUDENT_MUTATION = gql`
     }
   }
 `;
-
 
 export const DELETE_STUDENT_MUTATION = gql`
   mutation DeleteStudent($id: ID!) {
@@ -362,7 +385,7 @@ export const GET_SUBJECTS_QUERY = gql`
       name
     }
   }
-`
+`;
 
 export const GET_TUTOR_APPOINTMENTS_QUERY = gql`
   query TutorAppointments($tutorId: ID!) {
@@ -371,7 +394,7 @@ export const GET_TUTOR_APPOINTMENTS_QUERY = gql`
       date
     }
   }
-`
+`;
 
 export const ADD_APPOINTMENT_MUTATION = gql`
   mutation AddAppointment($student: ID!, $tutor: ID!, $date: String!) {
@@ -381,7 +404,7 @@ export const ADD_APPOINTMENT_MUTATION = gql`
       confirmed
     }
   }
-`
+`;
 
 export const TUTOR_APPOINTMENTS_QUERY = gql`
   query TutorAppointments($tutorId: ID!) {
@@ -397,7 +420,7 @@ export const TUTOR_APPOINTMENTS_QUERY = gql`
       }
     }
   }
-`
+`;
 
 export const STUDENT_APPOINTMENTS_QUERY = gql`
   query StudentAppointments($studentId: ID!) {
@@ -413,5 +436,5 @@ export const STUDENT_APPOINTMENTS_QUERY = gql`
       }
     }
   }
-`
+`;
 

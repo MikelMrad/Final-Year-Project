@@ -1,4 +1,4 @@
-const { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLFloat } = require("graphql")
+const { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLFloat, GraphQLInt } = require("graphql")
 const AppointmentType = require("./AppointmentType")
 const Appointment = require("../../models/Appointment")
 
@@ -20,13 +20,14 @@ const TutorType = new GraphQLObjectType({
     hourlyRate: { type: GraphQLFloat }, 
     subjects: { type: new GraphQLList(GraphQLString) },
     image: { type: GraphQLString },
+    grade: { type: GraphQLInt },
     workingHours: { type: new GraphQLList(WorkingHoursType) },
     appointments: {
       type: new GraphQLList(AppointmentType),
       resolve(parent) {
         return Appointment.find({ tutor: parent._id }).populate("student")
       }
-    },    
+    },
     token: { type: GraphQLString }
   })
 })

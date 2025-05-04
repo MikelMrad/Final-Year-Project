@@ -3,13 +3,13 @@ const TutorType = require("../types/TutorType")
 const { protect } = require("../../middleware/authMiddleware")
 const { adminProtect } = require("../../middleware/adminAuthMiddleware")
 const generateToken = require("../../config/generateTokens")
-const { 
-  GraphQLList, 
-  GraphQLID, 
-  GraphQLString, 
-  GraphQLFloat, 
-  GraphQLObjectType,
-  GraphQLInputObjectType
+const {
+  GraphQLList,
+  GraphQLID,
+  GraphQLString,
+  GraphQLFloat,
+  GraphQLInputObjectType,
+  GraphQLInt
 } = require("graphql")
 
 const InputWorkingHoursType = new GraphQLInputObjectType({
@@ -24,43 +24,13 @@ const InputWorkingHoursType = new GraphQLInputObjectType({
 const Appointment = require("../../models/Appointment")
 
 const TutorQueries = {
-  // query {
-  //   tutors {
-  //     id
-  //     name
-  //     email
-  //     hourlyRate
-  //     subjects
-  //     image
-  //     workingHours {
-  //       day
-  //       startTime
-  //       endTime
-  //     }
-  //   }
-  // }
   tutors: {
     type: new GraphQLList(TutorType),
     async resolve(_, args, context) {
-      await protect(context) 
+      await protect(context)
       return await Tutor.find()
     }
   },
-  // query {
-  //   tutor(id: "TUTOR_ID") {
-  //     id
-  //     name
-  //     email
-  //     hourlyRate
-  //     subjects
-  //     image
-  //     workingHours {
-  //       day
-  //       startTime
-  //       endTime
-  //     }
-  //   }
-  // }
   tutor: {
     type: TutorType,
     args: { id: { type: GraphQLID } },
@@ -74,33 +44,6 @@ const TutorQueries = {
 }
 
 const TutorMutations = {
-  // mutation {
-  //   addTutor(
-  //     name: "John Doe"
-  //     email: "johndoe@example.com"
-  //     password: "password123"
-  //     hourlyRate: 50.0
-  //     subjects: ["Math", "Science"]
-  //     image: "profile.jpg"
-  //     workingHours: [
-  //       { day: "Monday", startTime: "09:00", endTime: "17:00" },
-  //       { day: "Wednesday", startTime: "10:00", endTime: "16:00" }
-  //     ]
-  //   ) {
-  //     id
-  //     name
-  //     email
-  //     hourlyRate
-  //     subjects
-  //     image
-  //     workingHours {
-  //       day
-  //       startTime
-  //       endTime
-  //     }
-  //     token
-  //   }
-  // }
   addTutor: {
     type: TutorType,
     args: {
@@ -110,6 +53,7 @@ const TutorMutations = {
       hourlyRate: { type: GraphQLFloat },
       subjects: { type: new GraphQLList(GraphQLString) },
       image: { type: GraphQLString },
+      grade: { type: GraphQLInt },
       workingHours: { type: new GraphQLList(InputWorkingHoursType) }
     },
     async resolve(_, args) {
@@ -124,6 +68,7 @@ const TutorMutations = {
         hourlyRate: args.hourlyRate,
         subjects: args.subjects,
         image: args.image,
+        grade: args.grade,
         workingHours: args.workingHours
       })
       const savedTutor = await tutor.save()
@@ -131,31 +76,10 @@ const TutorMutations = {
       return {
         ...savedTutor._doc,
         id: savedTutor.id,
-        token 
+        token
       }
     }
   },
-  // mutation {
-  //   updateTutor(
-  //     id: "TUTOR_ID"
-  //     name: "Updated Name"
-  //     hourlyRate: 60
-  //     subjects: ["English", "Physics"]
-  //     image: "new-profile.jpg"
-  //   ) {
-  //     id
-  //     name
-  //     email
-  //     hourlyRate
-  //     subjects
-  //     image
-  //     workingHours {
-  //       day
-  //       startTime
-  //       endTime
-  //     }
-  //   }
-  // }
   updateTutor: {
     type: TutorType,
     args: {
@@ -166,13 +90,14 @@ const TutorMutations = {
       hourlyRate: { type: GraphQLFloat },
       subjects: { type: new GraphQLList(GraphQLString) },
       image: { type: GraphQLString },
+      grade: { type: GraphQLInt },
       workingHours: { type: new GraphQLList(InputWorkingHoursType) }
     },
     async resolve(_, args, context) {
       await protect(context)
-  
+
       const updateFields = {}
-  
+
       if (args.name !== undefined) updateFields.name = args.name
       if (args.email !== undefined) updateFields.email = args.email
       if (args.password !== undefined) {
@@ -181,7 +106,7 @@ const TutorMutations = {
       if (args.hourlyRate !== undefined) updateFields.hourlyRate = args.hourlyRate
       if (args.subjects !== undefined) updateFields.subjects = args.subjects
       if (args.image !== undefined) updateFields.image = args.image
-  
+      if (args.grade !== undefined) updateFields.grade = args.grade
       if (args.workingHours !== undefined) {
         args.workingHours.forEach(entry => {
           if (!entry.day || !entry.startTime || !entry.endTime) {
@@ -194,19 +119,12 @@ const TutorMutations = {
         })
         updateFields.workingHours = args.workingHours
       }
-  
+
       const updatedTutor = await Tutor.findByIdAndUpdate(args.id, updateFields, { new: true })
       if (!updatedTutor) throw new Error("Tutor not found")
-  
       return updatedTutor
     }
   },
-  // mutation {
-  //   deleteTutor(id: "TUTOR_ID") {
-  //     id
-  //     name
-  //   }
-  // }
   deleteTutor: {
     type: TutorType,
     args: { id: { type: GraphQLID } },

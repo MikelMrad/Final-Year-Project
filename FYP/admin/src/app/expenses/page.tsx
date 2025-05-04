@@ -52,6 +52,8 @@ export default function ExpensesPage() {
                   <strong>{expense.title}</strong> – ${expense.amount}
                   <br />
                   Date: {new Date(expense.date).toLocaleDateString()}
+                  <br />
+                  Count: {expense.count}
                 </div>
                 <div className={styles.buttonGroup}>
                   <button

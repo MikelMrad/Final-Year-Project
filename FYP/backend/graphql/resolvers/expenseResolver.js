@@ -1,6 +1,6 @@
 const Expense = require("../../models/Expense")
 const ExpenseType = require("../types/ExpenseType")
-const { GraphQLList, GraphQLID, GraphQLString, GraphQLFloat } = require("graphql")
+const { GraphQLList, GraphQLID, GraphQLString, GraphQLFloat, GraphQLInt } = require("graphql")
 
 const ExpenseQueries = {
   expenses: {
@@ -25,21 +25,20 @@ const ExpenseMutations = {
       title: { type: GraphQLString },
       amount: { type: GraphQLFloat },
       date: { type: GraphQLString },
+      count: { type: GraphQLInt },
     },
     resolve(_, args) {
       const validDate = args.date ? new Date(args.date) : new Date()
-
       if (isNaN(validDate.getTime())) {
-        throw new Error("Invalid date format");
+        throw new Error("Invalid date format")
       }
-
       const newExpense = new Expense({
         title: args.title,
         amount: args.amount,
         date: validDate,
+        count: args.count !== undefined ? args.count : 1,
       })
-
-      return newExpense.save();
+      return newExpense.save()
     },
   },
   updateExpense: {
@@ -49,20 +48,20 @@ const ExpenseMutations = {
       title: { type: GraphQLString },
       amount: { type: GraphQLFloat },
       date: { type: GraphQLString },
+      count: { type: GraphQLInt },
     },
     resolve(_, args) {
       const validDate = args.date ? new Date(args.date) : new Date()
-
       if (isNaN(validDate.getTime())) {
         throw new Error("Invalid date format")
       }
-
       return Expense.findByIdAndUpdate(
         args.id,
         {
           title: args.title,
           amount: args.amount,
           date: validDate,
+          count: args.count !== undefined ? args.count : 1,
         },
         { new: true }
       )
@@ -76,6 +75,5 @@ const ExpenseMutations = {
     },
   },
 }
-
 
 module.exports = { ExpenseQueries, ExpenseMutations }

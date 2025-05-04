@@ -12,6 +12,7 @@ export default function AddExpensePage() {
   const [title, setTitle] = useState("")
   const [amount, setAmount] = useState("")
   const [date, setDate] = useState("")
+  const [count, setCount] = useState("1")
 
   const [addExpense, { loading, error }] = useMutation(ADD_EXPENSE)
 
@@ -25,13 +26,13 @@ export default function AddExpensePage() {
         title,
         amount: parseFloat(amount),
         date: isoDate,
+        count: parseInt(count),
       },
     })
   
     router.push("/expenses")
   }
   
-
   return (
     <div className={styles.pageWrapper}>
       <Sidebar />
@@ -68,6 +69,17 @@ export default function AddExpensePage() {
               required
               className={styles.input}
               max={new Date().toISOString().split("T")[0]}
+            />
+          </label>
+          <label>
+            <span>Count</span>
+            <input
+              type="number"
+              value={count}
+              onChange={(e) => setCount(e.target.value)}
+              required
+              min="1"
+              className={styles.input}
             />
           </label>
           <button

@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import { useQuery } from "@apollo/client"
-import { Grid, Container, CircularProgress } from "@mui/material"
+import { Grid, Container } from "@mui/material"
 import NavBar from "../../../modules/NavBar/index"
 import Footer from "../../../modules/Footer"
 import TutorItem from "../../../components/TutorItem/index"
@@ -13,6 +13,7 @@ import LoadingScreen from "../../../components/LoadingScreen/page"
 interface Student {
   id: string
   weakPoints: string[]
+  grade: number
 }
 
 interface Tutor {
@@ -22,6 +23,7 @@ interface Tutor {
   image: string
   workingHours: { day: string; startTime: string; endTime: string }[]
   subjects: string[]
+  grade: number
 }
 
 export default function TutorsPage() {
@@ -34,21 +36,25 @@ export default function TutorsPage() {
   if (tutorsLoading || loading)
     return (
       <div>
-        <LoadingScreen/>
+        <LoadingScreen />
       </div>
     )
 
   if (tutorsError || error)
     return <p>Error: {tutorsError?.message || error?.message}</p>
 
-  const weakPoints = data?.student?.weakPoints || []
-  const normalizedWeakPoints = weakPoints.map(point => point.toLowerCase().trim())
+  const studentWeakPoints = data?.student?.weakPoints || []
+  const normalizedWeakPoints = studentWeakPoints.map(point => point.toLowerCase().trim())
+  const studentGrade = Number(data?.student?.grade) || 0
 
-  const filteredTutors = tutorsData?.tutors?.filter((tutor) =>
-    tutor.subjects.some((subject) =>
+  const filteredTutors = tutorsData?.tutors?.filter((tutor) => {
+    const subjectMatch = tutor.subjects.some((subject) =>
       normalizedWeakPoints.includes(subject.toLowerCase().trim())
     )
-  )
+    const tutorGrade = Number(tutor.grade)
+    const gradeMatch = tutorGrade >= studentGrade
+    return subjectMatch && gradeMatch
+  })
 
   return (
     <div>
@@ -57,14 +63,7 @@ export default function TutorsPage() {
         {(filteredTutors?.length ?? 0) > 0 ? (
           <Grid container spacing={4}>
             {filteredTutors?.map((tutor) => (
-              <Grid 
-                key={tutor.id} 
-                item 
-                xs={12}
-                sm={6} 
-                md={4} 
-                lg={3}  
-              >
+              <Grid key={tutor.id} item xs={12} sm={6} md={4} lg={3}>
                 <TutorItem
                   id={tutor.id}
                   name={tutor.name}

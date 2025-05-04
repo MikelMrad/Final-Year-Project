@@ -15,12 +15,18 @@ export default function EditExpensePage() {
   const [title, setTitle] = useState("")
   const [amount, setAmount] = useState("")
   const [date, setDate] = useState("")
+  const [count, setCount] = useState("1")
 
   useEffect(() => {
     if (data?.expense) {
       setTitle(data.expense.title)
       setAmount(data.expense.amount.toString())
       setDate(new Date(data.expense.date).toISOString().split("T")[0])
+      setCount(
+        data.expense.count !== undefined && data.expense.count !== null
+          ? data.expense.count.toString()
+          : "1"
+      )
     }
   }, [data])
 
@@ -31,7 +37,8 @@ export default function EditExpensePage() {
         id,
         title,
         amount: parseFloat(amount),
-        date: new Date(date).toISOString()
+        date: new Date(date).toISOString(),
+        count: parseInt(count)
       }
     })
     router.push("/expenses")
@@ -76,6 +83,17 @@ export default function EditExpensePage() {
               required
               className={styles.input}
               max={new Date().toISOString().split("T")[0]}
+            />
+          </label>
+          <label className={styles.label}>
+            <span className={styles.labelText}>Count</span>
+            <input
+              type="number"
+              value={count}
+              onChange={e => setCount(e.target.value)}
+              required
+              min="1"
+              className={styles.input}
             />
           </label>
           <button
