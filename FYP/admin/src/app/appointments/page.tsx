@@ -1,7 +1,7 @@
 'use client'
 
 import { useMutation, useQuery } from "@apollo/client"
-import { GET_ALL_APPOINTMENTS, CONFIRM_APPOINTMENT, DELETE_APPOINTMENT } from "../data/queries"
+import { GET_ALL_APPOINTMENTS, CONFIRM_APPOINTMENT, DELETE_APPOINTMENT, UPDATE_APPOINTMENT } from "../data/queries"
 import Sidebar from "../../components/AdminSidebar/page"
 import styles from "./style.module.css"
 import { useEffect } from "react"
@@ -11,6 +11,7 @@ export default function AppointmentsPage() {
   const { data, loading, error, refetch } = useQuery(GET_ALL_APPOINTMENTS)
   const [confirmAppointment] = useMutation(CONFIRM_APPOINTMENT)
   const [deleteAppointment] = useMutation(DELETE_APPOINTMENT)
+  const [updateAppointment] = useMutation(UPDATE_APPOINTMENT)
   const router = useRouter()
 
   useEffect(() => {
@@ -32,6 +33,15 @@ export default function AppointmentsPage() {
       refetch()
     } catch (err) {
       console.error("Delete error:", err)
+    }
+  }
+
+  const handlePaid = async (id: string) => {
+    try {
+      await updateAppointment({ variables: { id, isPaid: true } })
+      refetch()
+    } catch (err) {
+      console.error("Paid error:", err)
     }
   }
 
@@ -74,7 +84,7 @@ export default function AppointmentsPage() {
           <p>Error loading appointments</p>
         ) : (
           <ul className={styles.tutorList}>
-            {data.appointments.map((appt: any) => (
+            {data?.appointments.map((appt: any) => (
               <li key={appt.id} className={styles.tutorCard}>
                 <div>
                   <strong>Date:</strong> {formatDate(appt?.date)} <br />
@@ -82,7 +92,8 @@ export default function AppointmentsPage() {
                   <strong>End:</strong> {getEndTime(appt?.date)} <br />
                   <strong>Tutor:</strong> {appt?.tutor?.name} <br />
                   <strong>Student:</strong> {appt?.student?.name} <br />
-                  <strong>Status:</strong> {appt.confirmed ? "✅ Confirmed" : "❌ Not Confirmed"}
+                  <strong>Status:</strong> {appt.confirmed ? "✅ Confirmed" : "❌ Not Confirmed"} <br />
+                  <strong>Paid:</strong> {appt.isPaid ? "✅ Paid" : "❌ Not Paid"}
                 </div>
                 <div className={styles.buttonGroup}>
                   {!appt.confirmed && (
@@ -91,6 +102,15 @@ export default function AppointmentsPage() {
                       onClick={() => handleConfirm(appt?.id)}
                     >
                       Confirm
+                    </button>
+                  )}
+                  {!appt.isPaid && (
+                    <button
+                      className={`${styles.editButton} ${styles.paidButton}`}
+                      onClick={() => handlePaid(appt?.id)}
+                      style={{ backgroundColor: "green", color: "white" }}
+                    >
+                      Paid
                     </button>
                   )}
                   <button

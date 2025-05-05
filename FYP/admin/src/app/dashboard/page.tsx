@@ -95,7 +95,9 @@ const AdminHome = () => {
     return m
   }, [expenses, dateFilter])
 
-  const revenue      = filteredAppointments.reduce((sum,a) => sum + a.tutor.hourlyRate, 0)
+  const revenue = filteredAppointments.reduce((sum, a) => {
+    return sum + (a.tutor?.hourlyRate || 0);
+  }, 0)
   const totalExpense = Object.values(expenseSummary).reduce((s,x) => s + x, 0)
   const profit       = revenue - totalExpense
   const titles       = Object.keys(expenseSummary)
@@ -159,10 +161,12 @@ const AdminHome = () => {
               })}
               {filteredAppointments.map(a => (
                 <tr key={a.id}>
-                  <td className={styles.metric}>{a.student.name} with {a.tutor.name}</td>
-                  <td>${a.tutor.hourlyRate.toFixed(2)}</td>
+                  <td className={styles.metric}>
+                    {a.student?.name || "Unknown Student"} with {a.tutor?.name || "Unknown Tutor"}
+                  </td>
+                  <td>${a.tutor?.hourlyRate?.toFixed(2) || "0.00"}</td>
                   <td>1</td>
-                  <td>${(a.tutor.hourlyRate * 0.8).toFixed(2)}</td>
+                  <td>${(a.tutor?.hourlyRate ? a.tutor.hourlyRate * 0.8 : 0).toFixed(2)}</td>
                 </tr>
               ))}
               <tr className={styles.totalRow}>

@@ -135,6 +135,7 @@ export const GET_ALL_APPOINTMENTS = gql`
       id
       date
       confirmed
+      isPaid
       tutor {
         id
         name
@@ -179,6 +180,15 @@ export const DELETE_APPOINTMENT = gql`
     deleteAppointment(id: $id) {
       id
       date
+    }
+  }
+`;
+
+export const UPDATE_APPOINTMENT = gql`
+  mutation UpdateAppointment($id: ID!, $isPaid: Boolean) {
+    updateAppointment(id: $id, isPaid: $isPaid) {
+      id
+      isPaid
     }
   }
 `;

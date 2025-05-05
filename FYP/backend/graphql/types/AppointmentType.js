@@ -7,7 +7,8 @@ const AppointmentType = new GraphQLObjectType({
     student: { type: require("./StudentType") },
     tutor: { type: require("./TutorType") },
     date: { type: GraphQLString },
-    confirmed: { type: GraphQLBoolean }
+    confirmed: { type: GraphQLBoolean },
+    isPaid: { type: GraphQLBoolean }
   })
 })
 

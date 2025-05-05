@@ -3,7 +3,7 @@ const Tutor = require("../../models/Tutor")
 const Student = require("../../models/Student")
 const AppointmentType = require("../types/AppointmentType")
 const { adminProtect } = require("../../middleware/adminAuthMiddleware")
-const { GraphQLList, GraphQLID, GraphQLString } = require("graphql")
+const { GraphQLList, GraphQLID, GraphQLString, GraphQLBoolean } = require("graphql")
 
 const AppointmentQueries = {
   appointments: {
@@ -71,6 +71,7 @@ const AppointmentMutations = {
         tutor,
         date: appointmentDate,
         confirmed: false,
+        isPaid: false
       })
   
       // Save the appointment.
@@ -104,6 +105,23 @@ const AppointmentMutations = {
     async resolve(_, args, context) {
       await adminProtect(context)
       return await Appointment.findByIdAndDelete(args.id)
+    }
+  },
+  updateAppointment: {
+    type: AppointmentType,
+    args: {
+      id: { type: GraphQLID },
+      isPaid: { type: GraphQLBoolean }
+    },
+    async resolve(_, args, context) {
+      await adminProtect(context)
+      const { id, isPaid } = args
+      const updatedAppointment = await Appointment.findByIdAndUpdate(
+        id,
+        { isPaid },
+        { new: true }
+      ).populate("tutor").populate("student")
+      return updatedAppointment
     }
   }
 }

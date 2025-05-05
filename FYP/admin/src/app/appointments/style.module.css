@@ -43,6 +43,7 @@
 
 .editButton:hover {
   background-color: #117e68;
+  opacity: 0.8;
 }
 
 .deleteButton {
@@ -51,5 +52,16 @@
 }
 
 .deleteButton:hover {
-  background-color: #c0392b;
+  background-color: red;
+  color: white;
+}
+
+.paidButton {
+  background-color: green;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.paidButton:hover {
+  background-color: darkgreen;
 }
