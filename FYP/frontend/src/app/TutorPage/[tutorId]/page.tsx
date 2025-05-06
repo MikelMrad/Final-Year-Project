@@ -20,12 +20,16 @@ import {
   GET_TUTOR_QUERY,
   ADD_APPOINTMENT_MUTATION,
   GET_TUTOR_APPOINTMENTS_QUERY,
+  RATE_TUTOR_MUTATION,
+  GET_TUTOR_MEDIAN_RATING_QUERY,
 } from "@/data/queries"
 import NavBar from "../../../../modules/NavBar"
 import Footer from "../../../../modules/Footer"
 import { useAppSelector } from "@/redux/store"
 import styles from "../style.module.css"
 import LoadingScreen from "../../../../components/LoadingScreen/page"
+import StarIcon from "@mui/icons-material/Star"
+import Rating from "@mui/material/Rating"
 
 interface WorkingHour {
   day: string
@@ -41,6 +45,7 @@ interface Tutor {
   subjects: string[]
   image: string
   workingHours: WorkingHour[]
+  medianRating?: number
 }
 
 interface TutorData {
@@ -78,6 +83,14 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
   const [selectedSession, setSelectedSession] = useState<Slot | null>(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [rating, setRating] = useState<number | null>(null)
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   const { data: tutorData, loading: tutorLoading } = useQuery<TutorData>(GET_TUTOR_QUERY, {
     variables: { id: tutorId },
@@ -88,9 +101,15 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
     { variables: { tutorId } }
   )
 
+  const { data: medianRatingData, loading: medianRatingLoading } = useQuery(GET_TUTOR_MEDIAN_RATING_QUERY, {
+    variables: { id: tutorId },
+  });
+
   const [addAppointment] = useMutation(ADD_APPOINTMENT_MUTATION, {
     refetchQueries: [{ query: GET_TUTOR_APPOINTMENTS_QUERY, variables: { tutorId } }],
   })
+
+  const [rateTutor] = useMutation(RATE_TUTOR_MUTATION)
 
   useEffect(() => {
     if (!tutorLoading && tutorData && !appointmentsLoading && appointmentsData) {
@@ -131,7 +150,28 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
     }
   }
 
-  if (tutorLoading || appointmentsLoading) return <div><LoadingScreen/></div>
+  const handleRateTutor = async (newRating: number) => {
+    try {
+      await rateTutor({
+        variables: {
+          id: tutorId,
+          rating: newRating,
+          studentId: CURRENT_STUDENT_ID,
+        },
+      });
+      setRating(newRating);
+      setSnackbarMessage("Thank you for rating the tutor!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    } catch (error: any) {
+      console.error("Error rating tutor:", error);
+      setSnackbarMessage(error.message || "Failed to submit rating. Please try again.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  }
+
+  if (tutorLoading || appointmentsLoading || medianRatingLoading) return <div><LoadingScreen/></div>;
 
   return (
     <div>
@@ -156,12 +196,38 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
             <Typography variant="body1" className={styles.tutorText}>
               Hourly Rate: ${tutorData?.tutor.hourlyRate}
             </Typography>
+            <Typography variant="body1" className={styles.tutorText}>
+              Rating: 
+              <Box display="flex" alignItems="center" component="span">
+                {medianRatingData?.tutorMedianRating && medianRatingData.tutorMedianRating > 0 ? (
+                  <>
+                    {Array.from({ length: Math.round(medianRatingData.tutorMedianRating) }).map((_, index) => (
+                      <StarIcon key={index} style={{ color: "#FFD700" }} />
+                    ))}
+                    {` (${medianRatingData.tutorMedianRating.toFixed(1)})`}
+                  </>
+                ) : (
+                  " No ratings yet"
+                )}
+              </Box>
+            </Typography>
             <Typography variant="body1" className={styles.tutorText} gutterBottom>
               Working Hours:
               {tutorData?.tutor.workingHours.map((wh) => (
                 <span key={`${wh.day}-${wh.startTime}`}> {wh.day} {wh.startTime}-{wh.endTime} |</span>
               ))}
             </Typography>
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="h6">Rate this Tutor:</Typography>
+              <Rating
+                name="tutor-rating"
+                value={rating}
+                onChange={(_, newValue) => {
+                  if (newValue) handleRateTutor(newValue)
+                }}
+                max={5}
+              />
+            </Box>
             <FormControl fullWidth className={styles.formControl}>
               <InputLabel id="session-label">Available Sessions</InputLabel>
               <Select
@@ -199,6 +265,16 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
           Appointment successfully booked!
         </Alert>
       </Snackbar>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <Footer />
     </div>
   )
@@ -207,7 +283,6 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
 function formatTime(date: Date): string {
   return date.toTimeString().slice(0, 5)
 }
-
 
 function computeWorkingSlots(workingHours: WorkingHour[]): Slot[] {
   const slots: Slot[] = []
@@ -244,7 +319,6 @@ function computeWorkingSlots(workingHours: WorkingHour[]): Slot[] {
 
   return slots
 }
-
 
 function getNextDateForDay(dayName: string, time: string): string {
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]

@@ -153,6 +153,12 @@ export const GET_TUTOR_QUERY = gql`
   }
 `;
 
+export const GET_TUTOR_MEDIAN_RATING_QUERY = gql`
+  query TutorMedianRating($id: ID!) {
+    tutorMedianRating(id: $id)
+  }
+`;
+
 export const ADD_TUTOR_MUTATION = gql`
   mutation AddTutor(
     $name: String!
@@ -434,6 +440,16 @@ export const STUDENT_APPOINTMENTS_QUERY = gql`
       tutor {
         name
       }
+    }
+  }
+`;
+
+export const RATE_TUTOR_MUTATION = gql`
+  mutation RateTutor($id: ID!, $rating: Int!) {
+    rateTutor(id: $id, rating: $rating) {
+      id
+      name
+      medianRating
     }
   }
 `;

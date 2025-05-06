@@ -23,6 +23,15 @@ const InputWorkingHoursType = new GraphQLInputObjectType({
 
 const Appointment = require("../../models/Appointment")
 
+function calculateMedian(ratings) {
+  if (!ratings || ratings.length === 0) return 0;
+  const sorted = [...ratings].sort((a, b) => a - b)
+  const mid = Math.floor(sorted.length / 2)
+  return sorted.length % 2 === 0
+    ? (sorted[mid - 1] + sorted[mid]) / 2
+    : sorted[mid]
+}
+
 const TutorQueries = {
   tutors: {
     type: new GraphQLList(TutorType),
@@ -39,6 +48,16 @@ const TutorQueries = {
       const tutor = await Tutor.findById(args.id)
       if (!tutor) throw new Error("Tutor not found")
       return tutor
+    },
+  },
+  tutorMedianRating: {
+    type: GraphQLFloat,
+    args: { id: { type: GraphQLID } },
+    async resolve(_, args, context) {
+      await protect(context);
+      const tutor = await Tutor.findById(args.id)
+      if (!tutor) throw new Error("Tutor not found")
+      return calculateMedian(tutor.ratings)
     },
   },
 }
@@ -135,6 +154,49 @@ const TutorMutations = {
       await Appointment.deleteMany({ tutor: args.id })
       return deletedTutor
     }
+  },
+  rateTutor: {
+    type: TutorType,
+    args: {
+      id: { type: GraphQLID },
+      rating: { type: GraphQLInt },
+      studentId: { type: GraphQLID },
+    },
+    async resolve(_, args, context) {
+      await protect(context);
+
+      const { id: tutorId, rating, studentId } = args;
+
+      if (rating < 1 || rating > 5) {
+        throw new Error("Rating must be between 1 and 5");
+      }
+
+      // Check confirmed appointments between the student and tutor
+      const confirmedAppointments = await Appointment.find({
+        tutor: tutorId,
+        student: studentId,
+        confirmed: true,
+        date: { $lt: new Date() }, 
+      })
+
+      if (!confirmedAppointments || confirmedAppointments.length === 0) {
+        throw new Error("You can only rate a tutor after confirmed appointments have passed.")
+      }
+
+      const tutor = await Tutor.findById(tutorId)
+      if (!tutor) throw new Error("Tutor not found")
+
+      const studentRatingsCount = tutor.ratings.filter((r) => r.studentId.toString() === studentId).length
+
+      if (studentRatingsCount >= confirmedAppointments.length) {
+        throw new Error("You have already rated this tutor for all your confirmed appointments.")
+      }
+
+      tutor.ratings.push({ studentId, rating })
+      await tutor.save()
+
+      return tutor
+    },
   }
 }
 

@@ -99,6 +99,7 @@ export default function AppointmentsPage() {
                   {!appt.confirmed && (
                     <button
                       className={styles.editButton}
+                      style={{marginRight:"8px"}}
                       onClick={() => handleConfirm(appt?.id)}
                     >
                       Confirm

@@ -28,6 +28,12 @@ const TutorType = new GraphQLObjectType({
         return Appointment.find({ tutor: parent._id }).populate("student")
       }
     },
+    medianRating: {
+      type: GraphQLFloat,
+      resolve(parent) {
+        return parent.medianRating
+      }
+    },
     token: { type: GraphQLString }
   })
 })

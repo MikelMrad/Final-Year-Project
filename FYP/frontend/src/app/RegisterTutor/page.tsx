@@ -187,6 +187,8 @@ export default function RegisterTutorPage() {
     }
   }
 
+  const defaultImage = "/default-avatar.png" 
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
@@ -224,9 +226,9 @@ export default function RegisterTutorPage() {
           password,
           hourlyRate: parsedHourlyRate,
           subjects: subjectNames,
-          image: imageURL || (image !== "" ? image : undefined),
+          image: imageURL || (image !== "" ? image : defaultImage), 
           workingHours: workingHours.length > 0 ? workingHours : undefined,
-          grade // send grade in mutation
+          grade
         },
       })
       if (data?.registerTutor) {
