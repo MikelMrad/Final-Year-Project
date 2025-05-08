@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import React, { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
@@ -56,6 +56,7 @@ interface Appointment {
   id: string
   date: string
   confirmed: boolean
+  isPaid?: boolean
 }
 
 interface AppointmentsData {
@@ -79,18 +80,18 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
   const user = useAppSelector((state) => state.user)
   const CURRENT_STUDENT_ID = user.id
 
-  const [availableSessions, setAvailableSessions] = useState<Slot[]>([])
-  const [selectedSession, setSelectedSession] = useState<Slot | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [rating, setRating] = useState<number | null>(null)
+  const [availableSessions, setAvailableSessions] = useState<Slot[]>([]);
+  const [selectedSession, setSelectedSession] = useState<Slot | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [rating, setRating] = useState<number | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
 
   const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
+    setSnackbarOpen(false)
+  }
 
   const { data: tutorData, loading: tutorLoading } = useQuery<TutorData>(GET_TUTOR_QUERY, {
     variables: { id: tutorId },
@@ -101,15 +102,23 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
     { variables: { tutorId } }
   )
 
-  const { data: medianRatingData, loading: medianRatingLoading } = useQuery(GET_TUTOR_MEDIAN_RATING_QUERY, {
-    variables: { id: tutorId },
-  });
+  const { data: medianRatingData, loading: medianRatingLoading } = useQuery(
+    GET_TUTOR_MEDIAN_RATING_QUERY,
+    { variables: { id: tutorId } }
+  )
 
   const [addAppointment] = useMutation(ADD_APPOINTMENT_MUTATION, {
-    refetchQueries: [{ query: GET_TUTOR_APPOINTMENTS_QUERY, variables: { tutorId } }],
+    refetchQueries: [
+      { query: GET_TUTOR_APPOINTMENTS_QUERY, variables: { tutorId } }
+    ],
   })
 
-  const [rateTutor] = useMutation(RATE_TUTOR_MUTATION)
+  const [rateTutor] = useMutation(RATE_TUTOR_MUTATION, {
+    refetchQueries: [
+      { query: GET_TUTOR_MEDIAN_RATING_QUERY, variables: { id: tutorId } },
+      { query: GET_TUTOR_APPOINTMENTS_QUERY,   variables: { tutorId } }
+    ],
+  })
 
   useEffect(() => {
     if (!tutorLoading && tutorData && !appointmentsLoading && appointmentsData) {
@@ -133,14 +142,14 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
         setLoading(true)
         await addAppointment({
           variables: {
-            tutor: tutorId,
+            tutor:   tutorId,
             student: CURRENT_STUDENT_ID,
-            date: selectedSession.fullDate,
+            date:    new Date(selectedSession.fullDate).toISOString(),
           },
         })
-        setSuccess(true)
+        setSuccess(true);
         setTimeout(() => {
-          router.push("/Landing")
+          router.push("/Landing");
         }, 1500)
       } catch (error) {
         console.error("Error booking appointment:", error)
@@ -154,24 +163,26 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
     try {
       await rateTutor({
         variables: {
-          id: tutorId,
-          rating: newRating,
+          id:        tutorId,
+          rating:    newRating,
           studentId: CURRENT_STUDENT_ID,
         },
-      });
-      setRating(newRating);
-      setSnackbarMessage("Thank you for rating the tutor!");
-      setSnackbarSeverity("success");
+      })
+      setRating(newRating)
+      setSnackbarMessage("Thank you for rating the tutor!")
+      setSnackbarSeverity("success")
       setSnackbarOpen(true);
     } catch (error: any) {
-      console.error("Error rating tutor:", error);
+      console.error("Error rating tutor:", error)
       setSnackbarMessage(error.message || "Failed to submit rating. Please try again.");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+      setSnackbarSeverity("error")
+      setSnackbarOpen(true)
     }
   }
 
-  if (tutorLoading || appointmentsLoading || medianRatingLoading) return <div><LoadingScreen/></div>;
+  if (tutorLoading || appointmentsLoading || medianRatingLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div>
@@ -194,16 +205,16 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
               Subjects: {tutorData?.tutor.subjects.join(", ")}
             </Typography>
             <Typography variant="body1" className={styles.tutorText}>
-              Hourly Rate: ${tutorData?.tutor.hourlyRate}
+              Hourly Rate: ${tutorData?.tutor.hourlyRate.toFixed(2)}
             </Typography>
             <Typography variant="body1" className={styles.tutorText}>
-              Rating: 
-              <Box display="flex" alignItems="center" component="span">
+              Rating:{" "}
+              <Box component="span" display="flex" alignItems="center">
                 {medianRatingData?.tutorMedianRating && medianRatingData.tutorMedianRating > 0 ? (
                   <>
-                    {Array.from({ length: Math.round(medianRatingData.tutorMedianRating) }).map((_, index) => (
-                      <StarIcon key={index} style={{ color: "#FFD700" }} />
-                    ))}
+                    {Array.from({ length: Math.round(medianRatingData.tutorMedianRating) }).map(
+                      (_, i) => <StarIcon key={i} style={{ color: "#FFD700" }} />
+                    )}
                     {` (${medianRatingData.tutorMedianRating.toFixed(1)})`}
                   </>
                 ) : (
@@ -214,7 +225,10 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
             <Typography variant="body1" className={styles.tutorText} gutterBottom>
               Working Hours:
               {tutorData?.tutor.workingHours.map((wh) => (
-                <span key={`${wh.day}-${wh.startTime}`}> {wh.day} {wh.startTime}-{wh.endTime} |</span>
+                <span key={`${wh.day}-${wh.startTime}`}>
+                  {" "}
+                  {wh.day} {wh.startTime}-{wh.endTime} |
+                </span>
               ))}
             </Typography>
             <Box sx={{ mt: 2 }}>
@@ -223,7 +237,7 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
                 name="tutor-rating"
                 value={rating}
                 onChange={(_, newValue) => {
-                  if (newValue) handleRateTutor(newValue)
+                  if (newValue) handleRateTutor(newValue);
                 }}
                 max={5}
               />
@@ -234,7 +248,7 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
                 labelId="session-label"
                 value={selectedSession ? JSON.stringify(selectedSession) : ""}
                 label="Available Sessions"
-                onChange={(e) => setSelectedSession(JSON.parse(e.target.value))}
+                onChange={(e) => setSelectedSession(JSON.parse(e.target.value as string))}
               >
                 {availableSessions.map((session) => (
                   <MenuItem key={session.fullDate} value={JSON.stringify(session)}>
@@ -249,7 +263,7 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
               onClick={handleApplyForSession}
               className={styles.applyButton}
               disabled={!selectedSession || loading}
-              style={{ marginTop: "16px" , padding: "16px 0" }}
+              style={{ marginTop: "16px", padding: "16px 0" }}
             >
               {loading ? <CircularProgress size={24} color="inherit" /> : "Apply for Session"}
             </Button>
@@ -275,6 +289,7 @@ export default function TutorDetailPage({ params }: TutorDetailPageProps) {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+
       <Footer />
     </div>
   )
@@ -286,66 +301,35 @@ function formatTime(date: Date): string {
 
 function computeWorkingSlots(workingHours: WorkingHour[]): Slot[] {
   const slots: Slot[] = []
-
   workingHours.forEach(({ day, startTime, endTime }) => {
-    const [startHour, startMinute] = startTime.split(":").map(Number)
-    const [endHour, endMinute] = endTime.split(":").map(Number)
-
+    const [sh, sm] = startTime.split(":").map(Number)
+    const [eh, em] = endTime.split(":").map(Number)
     let current = new Date()
-    current.setHours(startHour, startMinute, 0, 0)
-
+    current.setHours(sh, sm, 0, 0)
     const end = new Date()
-    end.setHours(endHour, endMinute, 0, 0)
+    end.setHours(eh, em, 0, 0)
 
     while (current.getTime() + 60 * 60 * 1000 <= end.getTime()) {
       const start = new Date(current)
-      const endSession = new Date(current.getTime() + 60 * 60 * 1000)
-
+      const endSess = new Date(current.getTime() + 60 * 60 * 1000)
       const formattedStart = formatTime(start)
-      const formattedEnd = formatTime(endSession)
-
+      const formattedEnd = formatTime(endSess)
       const fullDate = getNextDateForDay(day, formattedStart)
-
-      slots.push({
-        day,
-        startTime: formattedStart,
-        endTime: formattedEnd,
-        fullDate,
-      })
-
-      current = endSession
+      slots.push({ day, startTime: formattedStart, endTime: formattedEnd, fullDate })
+      current = endSess
     }
   })
-
   return slots
 }
 
 function getNextDateForDay(dayName: string, time: string): string {
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
   const today = new Date()
-  const targetDay = dayNames.indexOf(dayName)
-  if (targetDay === -1) return formatLocalISO(today)
-  const dayDiff = (targetDay + 7 - today.getDay()) % 7 || 7
-  const targetDate = new Date(today)
-  targetDate.setDate(today.getDate() + dayDiff)
-  const [hours, minutes] = time.split(":")
-  targetDate.setHours(parseInt(hours), parseInt(minutes), 0, 0)
-  return formatLocalISO(targetDate)
-}
-
-function formatLocalISO(date: Date): string {
-  const pad = (num: number) => num.toString().padStart(2, "0")
-  const year = date.getFullYear()
-  const month = pad(date.getMonth() + 1)
-  const day = pad(date.getDate())
-  const hours = pad(date.getHours())
-  const minutes = pad(date.getMinutes())
-  const seconds = pad(date.getSeconds())
-  const ms = date.getMilliseconds().toString().padStart(3, "0")
-  const offsetMinutes = -date.getTimezoneOffset()
-  const sign = offsetMinutes >= 0 ? "+" : "-"
-  const absOffset = Math.abs(offsetMinutes)
-  const offsetHours = pad(Math.floor(absOffset / 60))
-  const offsetMins = pad(absOffset % 60)
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${ms}${sign}${offsetHours}:${offsetMins}`
+  const target = dayNames.indexOf(dayName)
+  const diff = (target + 7 - today.getDay()) % 7 || 7
+  const date = new Date(today)
+  date.setDate(today.getDate() + diff)
+  const [h, m] = time.split(":").map(Number)
+  date.setHours(h, m, 0, 0)
+  return date.toISOString()
 }

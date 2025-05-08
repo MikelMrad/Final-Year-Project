@@ -445,12 +445,12 @@ export const STUDENT_APPOINTMENTS_QUERY = gql`
 `;
 
 export const RATE_TUTOR_MUTATION = gql`
-  mutation RateTutor($id: ID!, $rating: Int!) {
-    rateTutor(id: $id, rating: $rating) {
+  mutation RateTutor($id: ID!, $rating: Int!, $studentId: ID!) {
+    rateTutor(id: $id, rating: $rating, studentId: $studentId) {
       id
       name
-      medianRating
-    }
-  }
-`;
+     medianRating
+   }
+ }
+`
 
